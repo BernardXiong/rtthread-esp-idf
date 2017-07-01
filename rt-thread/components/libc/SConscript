@@ -1,0 +1,27 @@
+# for libc component
+import os
+Import('rtconfig')
+
+from building import *
+
+objs = []
+cwd  = GetCurrentDir()
+
+if GetDepend('RT_USING_LIBC'):
+    if os.path.isfile(os.path.join(cwd, 'newlib/SConscript')) and rtconfig.PLATFORM == 'gcc':
+        objs = objs + SConscript('newlib/SConscript')
+    elif os.path.isfile(os.path.join(cwd, 'armlibc/SConscript')) and rtconfig.PLATFORM == 'armcc':
+        objs = objs + SConscript('armlibc/SConscript')
+    elif os.path.isfile(os.path.join(cwd, 'dlib/SConscript')) and rtconfig.PLATFORM == 'iar':
+        objs = objs + SConscript('dlib/SConscript')
+else:
+    if os.path.isfile(os.path.join(cwd, 'minilibc/SConscript')) and rtconfig.PLATFORM == 'gcc' and rtconfig.ARCH != 'sim':
+        objs = objs + SConscript('minilibc/SConscript')
+
+if GetDepend('RT_USING_LIBC') and GetDepend('RT_USING_PTHREADS'):
+	objs = objs + SConscript('pthreads/SConscript')
+
+if GetDepend('RT_USING_MODULE') and GetDepend('RT_USING_LIBDL'):
+	objs = objs + SConscript('libdl/SConscript')
+
+Return('objs')

@@ -1,0 +1,12 @@
+from building import *
+
+src = Glob('*.c')
+cwd = GetCurrentDir()
+
+CPPPATH = [cwd]
+CPPDEFINES = ['RT_USING_NEWLIB']
+
+group = DefineGroup('newlib', src, depend = ['RT_USING_LIBC'], 
+    CPPPATH = CPPPATH, CPPDEFINES = CPPDEFINES)
+
+Return('group')

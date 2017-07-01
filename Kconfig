@@ -1,0 +1,55 @@
+mainmenu "RT-Thread Project Configuration"
+
+config $BSP_DIR
+    string
+    option env="BSP_ROOT"
+    default "."
+
+config $RTT_DIR
+    string
+    option env="RTT_ROOT"
+    default "rt-thread"
+
+config $PKGS_DIR
+    string
+    option env="PKGS_ROOT"
+    default "packages"
+
+source "$RTT_DIR/KConfig"
+
+menu "Board Support Package"
+
+config RT_USING_UART1
+    bool "Enable UART1"
+    default y
+
+config RT_USING_UART2
+    bool "Enable UART2"
+    default y
+
+config CONFIG_CHIP_ESP32
+    bool
+    default y
+
+select CONFIG_CHIP_ESP32
+
+choice CONFIG_BOARD
+    prompt "Hardware board"
+    default CONFIG_BOARD_ESP32
+    help
+        which hardware board should be this bsp supported.
+
+config CONFIG_BOARD_ESP32
+    bool "Espressif ESP32 board"
+config CONFIG_BOARD_ESP32_RTAUDIO
+    bool "ESP32 audio board by RT-Thread"
+
+endchoice
+
+config RT_USING_WIFI
+    bool "Support WiFi"
+    default y
+
+endmenu
+
+source "$PKGS_DIR/KConfig"
