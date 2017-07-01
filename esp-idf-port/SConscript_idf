@@ -1,0 +1,152 @@
+from building import *
+
+cwd = GetCurrentDir()
+src = Split('''
+esp-idf/components/newlib/locks.c
+esp-idf/components/newlib/reent_init.c
+esp-idf/components/newlib/syscalls.c
+esp-idf/components/newlib/time.c
+esp-idf/components/driver/rtc_module.c
+esp-idf/components/driver/i2c.c
+esp-idf/components/driver/mcpwm.c
+esp-idf/components/driver/timer.c
+esp-idf/components/driver/sdmmc_host.c
+esp-idf/components/driver/sdmmc_transaction.c
+esp-idf/components/driver/rmt.c
+esp-idf/components/driver/pcnt.c
+esp-idf/components/driver/gpio.c
+esp-idf/components/driver/ledc.c
+esp-idf/components/driver/periph_ctrl.c
+esp-idf/components/driver/i2s.c
+esp-idf/components/driver/uart.c
+esp-idf/components/driver/sigmadelta.c
+esp-idf/components/driver/spi_common.c
+esp-idf/components/driver/spi_master.c
+esp-idf/components/driver/spi_slave.c
+esp-idf/components/esp32/cache_err_int.c
+esp-idf/components/esp32/clk.c
+esp-idf/components/esp32/dport_access.c
+esp-idf/components/esp32/int_wdt.c
+esp-idf/components/esp32/system_api.c
+esp-idf/components/esp32/hw_random.c
+esp-idf/components/esp32/event_loop.c
+esp-idf/components/esp32/core_dump.c
+esp-idf/components/esp32/intr_alloc.c
+esp-idf/components/esp32/ipc.c
+esp-idf/components/esp32/freertos_hooks.c
+esp-idf/components/esp32/heap_alloc_caps.c
+esp-idf/components/esp32/deep_sleep.c
+esp-idf/components/esp32/phy_init.c
+esp-idf/components/esp32/crosscore_int.c
+esp-idf/components/esp32/gdbstub.c
+esp-idf/components/esp32/lib_printf.c
+esp-idf/components/esp32/cpu_start.c
+esp-idf/components/esp32/task_wdt.c
+esp-idf/components/esp32/event_default_handlers.c
+esp-idf/components/esp32/panic.c
+esp-idf/components/esp32/restore.c
+esp-idf/components/esp32/hwcrypto/aes.c
+esp-idf/components/esp32/hwcrypto/sha.c
+esp-idf/components/freertos/list.c
+esp-idf/components/freertos/port.c
+esp-idf/components/freertos/xtensa_init.c
+esp-idf/components/freertos/croutine.c
+esp-idf/components/freertos/xtensa_overlay_os_hook.c
+esp-idf/components/freertos/xtensa_intr.c
+esp-idf/components/freertos/heap_regions.c
+esp-idf/components/freertos/heap_regions_debug.c
+esp-idf/components/freertos/ringbuf.c
+esp-idf/components/json/library/cJSON.c
+esp-idf/components/json/port/cJSON_Utils.c
+esp-idf/components/log/log.c
+esp-idf/components/sdmmc/sdmmc_cmd.c
+esp-idf/components/soc/esp32/brownout.c
+esp-idf/components/soc/esp32/cpu_util.c
+esp-idf/components/soc/esp32/rtc_clk.c
+esp-idf/components/soc/esp32/rtc_init.c
+esp-idf/components/soc/esp32/rtc_pm.c
+esp-idf/components/soc/esp32/rtc_sleep.c
+esp-idf/components/soc/esp32/rtc_time.c
+esp-idf/components/spi_flash/flash_ops.c
+esp-idf/components/spi_flash/cache_utils.c
+esp-idf/components/spi_flash/spi_flash_rom_patch.c
+esp-idf/components/spi_flash/partition.c
+esp-idf/components/spi_flash/flash_mmap.c
+esp-idf/components/tcpip_adapter/tcpip_adapter_lwip.c
+esp-idf/components/ulp/ulp.c
+esp-idf/components/wpa_supplicant/src/crypto/ms_funcs.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_internal-modexp.c
+esp-idf/components/wpa_supplicant/src/crypto/bignum.c
+esp-idf/components/wpa_supplicant/src/crypto/sha1-pbkdf2.c
+esp-idf/components/wpa_supplicant/src/crypto/md5.c
+esp-idf/components/wpa_supplicant/src/crypto/rc4.c
+esp-idf/components/wpa_supplicant/src/crypto/sha256.c
+esp-idf/components/wpa_supplicant/src/crypto/dh_groups.c
+esp-idf/components/wpa_supplicant/src/crypto/md4-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/sha1-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-wrap.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_internal.c
+esp-idf/components/wpa_supplicant/src/crypto/dh_group5.c
+esp-idf/components/wpa_supplicant/src/crypto/des-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_internal-rsa.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-unwrap.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-internal-dec.c
+esp-idf/components/wpa_supplicant/src/crypto/sha1.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/md5-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/sha256-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-internal-enc.c
+esp-idf/components/wpa_supplicant/port/os_xtensa.c
+''')
+
+cpp_src = Split('''
+esp-idf/components/cxx/cxx_guards.cpp
+esp-idf/components/nvs_flash/src/nvs_api.cpp
+esp-idf/components/nvs_flash/src/nvs_storage.cpp
+esp-idf/components/nvs_flash/src/nvs_pagemanager.cpp
+esp-idf/components/nvs_flash/src/nvs_item_hash_list.cpp
+esp-idf/components/nvs_flash/src/nvs_page.cpp
+esp-idf/components/nvs_flash/src/nvs_types.cpp
+''')
+
+asm_src = Split('''
+esp-idf/components/freertos/portasm.S
+esp-idf/components/freertos/xtensa_vectors.S
+esp-idf/components/freertos/xtensa_context.S
+esp-idf/components/freertos/xtensa_intr_asm.S
+''')
+
+CPPPATH = [
+cwd + '/esp-idf/components/app_trace/include',
+cwd + '/esp-idf/components/app_update/include',
+cwd + '/esp-idf/components/bootloader_support/include',
+cwd + '/esp-idf/components/bootloader_support/include_priv',
+cwd + '/esp-idf/components/bt/include',
+cwd + '/esp-idf/components/cxx/include',
+cwd + '/esp-idf/components/driver/include',
+cwd + '/esp-idf/components/driver/include/driver',
+cwd + '/esp-idf/components/esp32',
+cwd + '/esp-idf/components/esp32/include',
+cwd + '/esp-idf/components/ethernet/include',
+cwd + '/esp-idf/components/freertos/include',
+cwd + '/esp-idf/components/freertos/include/freertos',
+cwd + '/esp-idf/components/json/include',
+cwd + '/esp-idf/components/json/port/include',
+cwd + '/esp-idf/components/log/include',
+cwd + '/esp-idf/components/newlib/include',
+cwd + '/esp-idf/components/newlib/platform_include',
+cwd + '/esp-idf/components/nvs_flash/include',
+cwd + '/esp-idf/components/sdmmc/include',
+cwd + '/esp-idf/components/spi_flash/include',
+cwd + '/esp-idf/components/tcpip_adapter/include',
+cwd + '/esp-idf/components/ulp/include',
+cwd + '/esp-idf/components/soc/esp32/include',
+cwd + '/esp-idf/components/wpa_supplicant/include',
+cwd + '/esp-idf/components/wpa_supplicant/port/include',
+cwd + '/esp-idf/components/xtensa-debug-module/include',
+]
+CPPDEFINES = ['WITH_POSIX', 'ESP_PLATFORM']
+
+group = DefineGroup('esp-idf', src + cpp_src + asm_src, depend = [''], CPPPATH = CPPPATH, CPPDEFINES = CPPDEFINES)
+
+Return('group')

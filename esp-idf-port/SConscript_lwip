@@ -1,0 +1,71 @@
+from building import *
+
+cwd = GetCurrentDir()
+src = Split('''
+esp-idf/components/lwip/api/sockets.c
+esp-idf/components/lwip/api/api_msg.c
+esp-idf/components/lwip/api/err.c
+esp-idf/components/lwip/api/netbuf.c
+esp-idf/components/lwip/api/tcpip.c
+esp-idf/components/lwip/api/netifapi.c
+esp-idf/components/lwip/api/api_lib.c
+esp-idf/components/lwip/api/netdb.c
+esp-idf/components/lwip/api/pppapi.c
+esp-idf/components/lwip/apps/sntp/sntp.c
+esp-idf/components/lwip/apps/ping/esp_ping.c
+esp-idf/components/lwip/apps/ping/ping.c
+esp-idf/components/lwip/apps/dhcpserver.c
+esp-idf/components/lwip/core/ipv4/icmp.c
+esp-idf/components/lwip/core/ipv4/autoip.c
+esp-idf/components/lwip/core/ipv4/ip4.c
+esp-idf/components/lwip/core/ipv4/igmp.c
+esp-idf/components/lwip/core/ipv4/ip4_addr.c
+esp-idf/components/lwip/core/ipv4/dhcp.c
+esp-idf/components/lwip/core/ipv4/ip_frag.c
+esp-idf/components/lwip/core/ipv6/icmp6.c
+esp-idf/components/lwip/core/ipv6/ethip6.c
+esp-idf/components/lwip/core/ipv6/mld6.c
+esp-idf/components/lwip/core/ipv6/nd6.c
+esp-idf/components/lwip/core/ipv6/ip6.c
+esp-idf/components/lwip/core/ipv6/ip6_addr.c
+esp-idf/components/lwip/core/ipv6/inet6.c
+esp-idf/components/lwip/core/ipv6/dhcp6.c
+esp-idf/components/lwip/core/ipv6/ip6_frag.c
+esp-idf/components/lwip/core/tcp_out.c
+esp-idf/components/lwip/core/udp.c
+esp-idf/components/lwip/core/def.c
+esp-idf/components/lwip/core/timers.c
+esp-idf/components/lwip/core/stats.c
+esp-idf/components/lwip/core/netif.c
+esp-idf/components/lwip/core/pbuf.c
+esp-idf/components/lwip/core/tcp_in.c
+esp-idf/components/lwip/core/raw.c
+esp-idf/components/lwip/core/ip.c
+esp-idf/components/lwip/core/dns.c
+esp-idf/components/lwip/core/tcp.c
+esp-idf/components/lwip/core/sys.c
+esp-idf/components/lwip/core/memp.c
+esp-idf/components/lwip/core/init.c
+esp-idf/components/lwip/core/inet_chksum.c
+esp-idf/components/lwip/core/mem.c
+esp-idf/components/lwip/netif/ethernetif.c
+esp-idf/components/lwip/netif/lowpan6.c
+esp-idf/components/lwip/netif/ethernet.c
+esp-idf/components/lwip/netif/etharp.c
+esp-idf/components/lwip/netif/slipif.c
+esp-idf/components/lwip/port/debug/lwip_debug.c
+esp-idf/components/lwip/port/freertos/sys_arch.c
+esp-idf/components/lwip/port/netif/ethernetif.c
+esp-idf/components/lwip/port/netif/wlanif.c
+''')
+
+CPPPATH = [
+cwd + '/esp-idf/components/lwip/include/lwip',
+cwd + '/esp-idf/components/lwip/include/lwip/port',
+cwd + '/esp-idf/components/lwip/include/lwip/posix',
+cwd + '/esp-idf/components/lwip/apps/ping',
+]
+
+group = DefineGroup('esp-idf', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')
