@@ -6,10 +6,12 @@
 *.lo
 *.o
 *.obj
+*.pyc
 
 # Precompiled Headers
 *.gch
 *.pch
+*.map
 
 # Compiled Dynamic libraries
 *.so
@@ -23,10 +25,11 @@
 # Compiled Static libraries
 *.lai
 *.la
-*.a
-*.lib
 
 # Executables
 *.exe
 *.out
 *.app
+*.elf
+
+.sconsign.dblite

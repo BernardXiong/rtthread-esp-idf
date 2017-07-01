@@ -39,7 +39,7 @@ if PLATFORM == 'gcc':
     DEVICE = ' '
     CFLAGS = DEVICE + '-Os -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -mlongcalls -nostdlib -Wall'
     AFLAGS = ' -c' + DEVICE + ' -x assembler-with-cpp -MMD -MP -I./esp-idf-port/esp-idf/components/freertos/include/freertos -I./esp-idf-port/esp-idf/components/esp32/include -I./esp-idf-port/esp-idf/components/soc/esp32/include -I.'
-    LFLAGS = DEVICE + ' -u call_user_start_cpu0 -u __cxa_guard_dummy -Wl,--undefined=uxTopUsedPriority,--gc-sections,-Map=rtthread-esp32.map,-cref,-static -nostdlib -T esp32_out.ld -T esp32.common.ld -T esp32.rom.ld -T esp32.peripherals.ld -T esp32.rom.spiflash.ld'
+    LFLAGS = DEVICE + ' -u call_user_start_cpu0 -u __cxa_guard_dummy -Wl,--undefined=uxTopUsedPriority,--gc-sections,-Map=rtthread-esp32.map,-cref,-static -nostdlib -T esp32_out.ld -T esp32.common.ld -T ./esp-idf-port/esp-idf/components/esp32/ld/esp32.rom.ld -T ./esp-idf-port/esp-idf/components/esp32/ld/esp32.peripherals.ld -T ./esp-idf-port/esp-idf/components/esp32/ld/esp32.rom.spiflash.ld'
 
     CPATH = ''
     LPATH = ''
