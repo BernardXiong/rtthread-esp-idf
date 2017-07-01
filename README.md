@@ -13,6 +13,7 @@ git submodule update
 cd rtthread-esp-idf/esp-idf-port
 git submodule init
 git submodule update
+git am ../*.patch
 ```
 
 # 交叉编译工具链下载
