@@ -9,7 +9,7 @@
 #define RT_NAME_MAX 8
 #define RT_ALIGN_SIZE 4
 #define RT_THREAD_PRIORITY_MAX 32
-#define RT_TICK_PER_SECOND 1000
+#define RT_TICK_PER_SECOND 100
 #define RT_DEBUG
 #define RT_USING_OVERFLOW_CHECK
 /* CONFIG_RT_DEBUG_INIT is not set */
@@ -18,7 +18,7 @@
 #define RT_USING_IDLE_HOOK
 #define RT_USING_TIMER_SOFT
 #define RT_TIMER_THREAD_PRIO 4
-#define RT_TIMER_THREAD_STACK_SIZE 2048
+#define RT_TIMER_THREAD_STACK_SIZE 1024
 #define IDLE_THREAD_STACK_SIZE 1024
 
 /* Inter-Thread communication */
@@ -63,7 +63,7 @@
 #define FINSH_DEFAULT_PASSWORD "rtthread"
 #define FINSH_USING_MSH
 #define FINSH_USING_MSH_DEFAULT
-#define FINSH_USING_MSH_ONLY
+/* CONFIG_FINSH_USING_MSH_ONLY is not set */
 
 /* Device virtual file system */
 
@@ -110,9 +110,9 @@
 /* light weight TCP/IP stack */
 
 #define RT_USING_LWIP
-/* CONFIG_RT_USING_LWIP141 is not set */
+#define RT_USING_LWIP141
 /* CONFIG_RT_USING_LWIP200 is not set */
-#define RT_USING_LWIP202
+/* CONFIG_RT_USING_LWIP202 is not set */
 #define RT_LWIP_IGMP
 #define RT_LWIP_ICMP
 /* CONFIG_RT_LWIP_SNMP is not set */
@@ -137,8 +137,8 @@
 #define RT_LWIP_ETHTHREAD_PRIORITY 12
 #define RT_LWIP_ETHTHREAD_STACKSIZE 1024
 #define RT_LWIP_ETHTHREAD_MBOX_SIZE 8
-#define RT_LWIP_REASSEMBLY_FRAG
-#define LWIP_NETIF_STATUS_CALLBACK 1
+/* CONFIG_RT_LWIP_REASSEMBLY_FRAG is not set */
+#define LWIP_NETIF_STATUS_CALLBACK 0
 /* CONFIG_LWIP_SOCKOPT is not set */
 
 /* Modbus master and slave stack */
