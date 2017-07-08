@@ -22,7 +22,7 @@
 #include "esp_log.h"
 #include "wifi_airkiss.h"
 
-#define WIFI_USING_AIRKISS
+// #define WIFI_USING_AIRKISS
 #define WIFI_SSID   "realthread_309"
 #define WIFI_PASSWD "02158995663"
 
@@ -58,6 +58,21 @@ void rt_hw_wifi_init()
     ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_FLASH) );
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
     ESP_ERROR_CHECK( esp_wifi_start() );
+
+    wifi_config_t wifi_config;
+    memset(&wifi_config, 0x0, sizeof(wifi_config));
+
+    esp_wifi_get_config(WIFI_IF_STA, &wifi_config);
+    if (wifi_config.sta.ssid[0] == 0)
+    {
+        printf("startup airkiss...\n");
+        wifi_airkiss();
+    }
+    else
+    {
+        esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
+        esp_wifi_connect();
+    }
 }
 #else
 void rt_hw_wifi_init()
@@ -103,8 +118,6 @@ int rtthread_stdio_init(void)
 
     libc_system_init();
     reent_std_init();
-
-    printf("system console printf ok\n");
     return 0;
 }
 
@@ -113,6 +126,10 @@ int rtthread_components_init(void)
     elm_init();
 
     finsh_system_init();
+#ifdef RT_USING_PTHREADS
+    extern int pthread_system_init(void);
+    pthread_system_init();
+#endif
 
 #if 0
     rt_hw_sflash_init();
@@ -120,11 +137,6 @@ int rtthread_components_init(void)
     {
         rt_kprintf("Mount filesystem done!\n");
     }
-#endif
-
-#ifdef RT_USING_PTHREADS
-    extern int pthread_system_init(void);
-    pthread_system_init();
 #endif
 
     /* mount sd to "/" */
@@ -153,29 +165,10 @@ MSH_CMD_EXPORT(libc_test, libc test!!!);
 
 void app_main()
 {
-    rt_kprintf("app main!!!\n");
     nvs_flash_init();
-    rt_kprintf("nvs_flash_init done!\n");
 
     rtthread_components_init();
     rt_hw_wifi_init();
-
-#ifdef WIFI_USING_AIRKISS
-    wifi_config_t wifi_config;
-    memset(&wifi_config, 0x0, sizeof(wifi_config));
-
-    esp_wifi_get_config(WIFI_IF_STA, &wifi_config);
-    if (wifi_config.sta.ssid[0] == 0)
-    {
-        printf("startup airkiss...\n");
-        wifi_airkiss();
-    }
-    else
-    {
-        esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
-        esp_wifi_connect();
-    }
-#endif
 
     return ;
 }
