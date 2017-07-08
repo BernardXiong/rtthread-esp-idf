@@ -20,8 +20,11 @@
 #include "esp_wifi.h"
 #include "esp_event_loop.h"
 #include "esp_log.h"
-
 #include "wifi_airkiss.h"
+
+#define WIFI_USING_AIRKISS
+#define WIFI_SSID   "realthread_309"
+#define WIFI_PASSWD "02158995663"
 
 static esp_err_t event_handler(void *ctx, system_event_t *event)
 {
@@ -45,7 +48,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
     return ESP_OK;
 }
 
-#if 1
+#ifdef WIFI_USING_AIRKISS
 void rt_hw_wifi_init()
 {
     tcpip_adapter_init();
@@ -67,8 +70,8 @@ void rt_hw_wifi_init()
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
     wifi_config_t sta_config = {
         .sta = {
-            .ssid = "realthread_309",
-            .password = "02158995663",
+            .ssid      = WIFI_SSID,
+            .password  = WIFI_PASSWD,
             .bssid_set = false
         }
     };
@@ -111,11 +114,13 @@ int rtthread_components_init(void)
 
     finsh_system_init();
 
+#if 0
     rt_hw_sflash_init();
     if (dfs_mount("flash", "/", "elm", 0, 0) == 0)
     {
         rt_kprintf("Mount filesystem done!\n");
     }
+#endif
 
 #ifdef RT_USING_PTHREADS
     extern int pthread_system_init(void);
@@ -124,7 +129,7 @@ int rtthread_components_init(void)
 
     /* mount sd to "/" */
     rt_hw_sdmmc_init();
-    if (dfs_mount("sd", "/sd", "elm", 0, 0) == 0)
+    if (dfs_mount("sd", "/", "elm", 0, 0) == 0)
     {
         rt_kprintf("Mount filesystem done!\n");
     }
@@ -155,7 +160,7 @@ void app_main()
     rtthread_components_init();
     rt_hw_wifi_init();
 
-#if 1
+#ifdef WIFI_USING_AIRKISS
     wifi_config_t wifi_config;
     memset(&wifi_config, 0x0, sizeof(wifi_config));
 
