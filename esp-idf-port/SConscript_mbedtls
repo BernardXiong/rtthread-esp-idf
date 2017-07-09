@@ -2,91 +2,91 @@ from building import *
 
 cwd = GetCurrentDir()
 src = Split('''
-components/mbedtls/library/havege.c
-components/mbedtls/library/ssl_cookie.c
-components/mbedtls/library/md5.c
-components/mbedtls/library/certs.c
-components/mbedtls/library/ssl_ciphersuites.c
-components/mbedtls/library/camellia.c
-components/mbedtls/library/x509_crl.c
-components/mbedtls/library/threading.c
-components/mbedtls/library/aesni.c
-components/mbedtls/library/bignum.c
-components/mbedtls/library/arc4.c
-components/mbedtls/library/cipher_wrap.c
-components/mbedtls/library/aes.c
-components/mbedtls/library/xtea.c
-components/mbedtls/library/base64.c
-components/mbedtls/library/sha512.c
-components/mbedtls/library/pkcs11.c
-components/mbedtls/library/asn1write.c
-components/mbedtls/library/oid.c
-components/mbedtls/library/ecjpake.c
-components/mbedtls/library/ssl_tls.c
-components/mbedtls/library/debug.c
-components/mbedtls/library/net.c
-components/mbedtls/library/ecdh.c
-components/mbedtls/library/x509_crt.c
-components/mbedtls/library/ssl_srv.c
-components/mbedtls/library/ecdsa.c
-components/mbedtls/library/md2.c
-components/mbedtls/library/x509_create.c
-components/mbedtls/library/memory_buffer_alloc.c
-components/mbedtls/library/gcm.c
-components/mbedtls/library/version.c
-components/mbedtls/library/pem.c
-components/mbedtls/library/padlock.c
-components/mbedtls/library/asn1parse.c
-components/mbedtls/library/timing.c
-components/mbedtls/library/ssl_cli.c
-components/mbedtls/library/pkwrite.c
-components/mbedtls/library/ssl_cache.c
-components/mbedtls/library/sha256.c
-components/mbedtls/library/md_wrap.c
-components/mbedtls/library/entropy.c
-components/mbedtls/library/md.c
-components/mbedtls/library/rsa.c
-components/mbedtls/library/ripemd160.c
-components/mbedtls/library/version_features.c
-components/mbedtls/library/cipher.c
-components/mbedtls/library/entropy_poll.c
-components/mbedtls/library/dhm.c
-components/mbedtls/library/error.c
-components/mbedtls/library/ssl_ticket.c
-components/mbedtls/library/x509.c
-components/mbedtls/library/blowfish.c
-components/mbedtls/library/ecp.c
-components/mbedtls/library/md4.c
-components/mbedtls/library/x509_csr.c
-components/mbedtls/library/pkparse.c
-components/mbedtls/library/pkcs5.c
-components/mbedtls/library/ccm.c
-components/mbedtls/library/pkcs12.c
-components/mbedtls/library/ecp_curves.c
-components/mbedtls/library/pk_wrap.c
-components/mbedtls/library/x509write_crt.c
-components/mbedtls/library/ctr_drbg.c
-components/mbedtls/library/platform.c
-components/mbedtls/library/pk.c
-components/mbedtls/library/x509write_csr.c
-components/mbedtls/library/des.c
-components/mbedtls/library/hmac_drbg.c
-components/mbedtls/library/sha1.c
-components/mbedtls/port/esp_sha512.c
-components/mbedtls/port/esp_hardware.c
-components/mbedtls/port/esp_bignum.c
-components/mbedtls/port/esp_sha256.c
-components/mbedtls/port/net.c
-components/mbedtls/port/esp_sha1.c
+esp-idf/components/mbedtls/library/havege.c
+esp-idf/components/mbedtls/library/ssl_cookie.c
+esp-idf/components/mbedtls/library/md5.c
+esp-idf/components/mbedtls/library/certs.c
+esp-idf/components/mbedtls/library/ssl_ciphersuites.c
+esp-idf/components/mbedtls/library/camellia.c
+esp-idf/components/mbedtls/library/x509_crl.c
+esp-idf/components/mbedtls/library/threading.c
+esp-idf/components/mbedtls/library/aesni.c
+esp-idf/components/mbedtls/library/bignum.c
+esp-idf/components/mbedtls/library/arc4.c
+esp-idf/components/mbedtls/library/cipher_wrap.c
+esp-idf/components/mbedtls/library/aes.c
+esp-idf/components/mbedtls/library/xtea.c
+esp-idf/components/mbedtls/library/base64.c
+esp-idf/components/mbedtls/library/sha512.c
+esp-idf/components/mbedtls/library/pkcs11.c
+esp-idf/components/mbedtls/library/asn1write.c
+esp-idf/components/mbedtls/library/oid.c
+esp-idf/components/mbedtls/library/ecjpake.c
+esp-idf/components/mbedtls/library/ssl_tls.c
+esp-idf/components/mbedtls/library/debug.c
+esp-idf/components/mbedtls/library/net.c
+esp-idf/components/mbedtls/library/ecdh.c
+esp-idf/components/mbedtls/library/x509_crt.c
+esp-idf/components/mbedtls/library/ssl_srv.c
+esp-idf/components/mbedtls/library/ecdsa.c
+esp-idf/components/mbedtls/library/md2.c
+esp-idf/components/mbedtls/library/x509_create.c
+esp-idf/components/mbedtls/library/memory_buffer_alloc.c
+esp-idf/components/mbedtls/library/gcm.c
+esp-idf/components/mbedtls/library/version.c
+esp-idf/components/mbedtls/library/pem.c
+esp-idf/components/mbedtls/library/padlock.c
+esp-idf/components/mbedtls/library/asn1parse.c
+esp-idf/components/mbedtls/library/timing.c
+esp-idf/components/mbedtls/library/ssl_cli.c
+esp-idf/components/mbedtls/library/pkwrite.c
+esp-idf/components/mbedtls/library/ssl_cache.c
+esp-idf/components/mbedtls/library/sha256.c
+esp-idf/components/mbedtls/library/md_wrap.c
+esp-idf/components/mbedtls/library/entropy.c
+esp-idf/components/mbedtls/library/md.c
+esp-idf/components/mbedtls/library/rsa.c
+esp-idf/components/mbedtls/library/ripemd160.c
+esp-idf/components/mbedtls/library/version_features.c
+esp-idf/components/mbedtls/library/cipher.c
+esp-idf/components/mbedtls/library/entropy_poll.c
+esp-idf/components/mbedtls/library/dhm.c
+esp-idf/components/mbedtls/library/error.c
+esp-idf/components/mbedtls/library/ssl_ticket.c
+esp-idf/components/mbedtls/library/x509.c
+esp-idf/components/mbedtls/library/blowfish.c
+esp-idf/components/mbedtls/library/ecp.c
+esp-idf/components/mbedtls/library/md4.c
+esp-idf/components/mbedtls/library/x509_csr.c
+esp-idf/components/mbedtls/library/pkparse.c
+esp-idf/components/mbedtls/library/pkcs5.c
+esp-idf/components/mbedtls/library/ccm.c
+esp-idf/components/mbedtls/library/pkcs12.c
+esp-idf/components/mbedtls/library/ecp_curves.c
+esp-idf/components/mbedtls/library/pk_wrap.c
+esp-idf/components/mbedtls/library/x509write_crt.c
+esp-idf/components/mbedtls/library/ctr_drbg.c
+esp-idf/components/mbedtls/library/platform.c
+esp-idf/components/mbedtls/library/pk.c
+esp-idf/components/mbedtls/library/x509write_csr.c
+esp-idf/components/mbedtls/library/des.c
+esp-idf/components/mbedtls/library/hmac_drbg.c
+esp-idf/components/mbedtls/library/sha1.c
+esp-idf/components/mbedtls/port/esp_sha512.c
+esp-idf/components/mbedtls/port/esp_hardware.c
+esp-idf/components/mbedtls/port/esp_bignum.c
+esp-idf/components/mbedtls/port/esp_sha256.c
+esp-idf/components/mbedtls/port/net.c
+esp-idf/components/mbedtls/port/esp_sha1.c
 ''')
 
 CPPPATH = [
-cwd + '/components/mbedtls/port/include',
-cwd + '/components/mbedtls/include',
-cwd + '/components/mbedtls/include/mbedtls',
+cwd + '/esp-idf/components/mbedtls/port/include',
+cwd + '/esp-idf/components/mbedtls/include',
+cwd + '/esp-idf/components/mbedtls/include/mbedtls',
 ]
 LOCAL_CPPDEFINES = ['MBEDTLS_CONFIG_FILE=\\"mbedtls/esp_config.h\\"', 'HAVE_CONFIG_H']
 
-group = DefineGroup('esp-mbedtls', src, depend = ['MBED_TLS'], CPPPATH = CPPPATH, LOCAL_CPPDEFINES = LOCAL_CPPDEFINES)
+group = DefineGroup('esp-mbedtls', src, depend = ['IDF_MBEDTLS'], CPPPATH = CPPPATH, LOCAL_CPPDEFINES = LOCAL_CPPDEFINES)
 
 Return('group')
