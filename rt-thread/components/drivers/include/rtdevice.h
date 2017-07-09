@@ -152,6 +152,8 @@ struct rt_workqueue
 {
 	rt_list_t      work_list;
 	struct rt_work *work_current; /* current work */
+
+    struct rt_semaphore sem; 
 	rt_thread_t    work_thread;
 };
 
@@ -286,7 +288,7 @@ rt_err_t rt_data_queue_push(struct rt_data_queue *queue,
                             rt_size_t             data_size,
                             rt_int32_t            timeout);
 rt_err_t rt_data_queue_pop(struct rt_data_queue *queue,
-                           const void          **data_ptr,
+                           void                 **data_ptr,
                            rt_size_t            *size,
                            rt_int32_t            timeout);
 rt_err_t rt_data_queue_peak(struct rt_data_queue *queue,
@@ -302,6 +304,7 @@ struct rt_workqueue *rt_workqueue_create(const char* name, rt_uint16_t stack_siz
 rt_err_t rt_workqueue_destroy(struct rt_workqueue* queue);
 rt_err_t rt_workqueue_dowork(struct rt_workqueue* queue, struct rt_work* work);
 rt_err_t rt_workqueue_cancel_work(struct rt_workqueue* queue, struct rt_work* work);
+rt_err_t rt_workqueue_cancel_work_sync(struct rt_workqueue* queue, struct rt_work* work);
 
 rt_inline void rt_work_init(struct rt_work* work, void (*work_func)(struct rt_work* work, void* work_data),
     void* work_data)

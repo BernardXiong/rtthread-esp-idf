@@ -397,12 +397,12 @@ static long _list_memheap(struct rt_list_node *list)
     maxlen = object_name_maxlen(list);
 
     rt_kprintf("%-*.s  pool size  max used size available size\n", maxlen, "memheap"); object_split(maxlen);
-    rt_kprintf(      " ---------- ------------- --------------\n");
+    rt_kprintf(      "   ---------- ------------- --------------\n");
     for (node = list->next; node != list; node = node->next)
     {
         mh = (struct rt_memheap *)rt_list_entry(node, struct rt_object, list);
 
-        rt_kprintf("%-*.*s %-010d %-013d %-05d\n",
+        rt_kprintf("%-*.*s   %-010d %-013d %-05d\n",
                    maxlen, RT_NAME_MAX,
                    mh->parent.name,
                    mh->pool_size,
