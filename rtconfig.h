@@ -110,9 +110,10 @@
 /* light weight TCP/IP stack */
 
 #define RT_USING_LWIP
-#define RT_USING_LWIP141
+/* CONFIG_RT_USING_LWIP141 is not set */
 /* CONFIG_RT_USING_LWIP200 is not set */
-/* CONFIG_RT_USING_LWIP202 is not set */
+#define RT_USING_LWIP202
+#define RT_LWIP_IPV6
 #define RT_LWIP_IGMP
 #define RT_LWIP_ICMP
 /* CONFIG_RT_LWIP_SNMP is not set */

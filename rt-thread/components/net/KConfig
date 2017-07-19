@@ -22,6 +22,10 @@ config RT_USING_LWIP
                 bool "lwIP v2.0.2"
         endchoice
 
+        config RT_LWIP_IPV6
+            bool "IPv6 protocol"
+            default n
+
         config RT_LWIP_IGMP
             bool "IGMP protocol"
             default n

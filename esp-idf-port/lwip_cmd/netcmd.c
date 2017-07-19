@@ -7,6 +7,7 @@
 #include <lwip/netif.h>
 #include <netif/ethernetif.h>
 
+#if 0
 void set_if(char* netif_name, char* ip_addr, char* gw_addr, char* nm_addr)
 {
     ip_addr_t *ip;
@@ -180,4 +181,6 @@ void list_tcps(void)
     rt_exit_critical();
 }
 FINSH_FUNCTION_EXPORT(list_tcps, list all of tcp connections);
+#endif
+
 #endif
