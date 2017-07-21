@@ -13,7 +13,10 @@ git submodule update
 cd rtthread-esp-idf/esp-idf-port
 git submodule init
 git submodule update
-git am ../*.patch
+
+cd esp-idf
+git am ../0001-cpu_start-patch.patch
+git am ../0002-add-esp_task.h.patch
 ```
 
 # 交叉编译工具链下载
