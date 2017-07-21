@@ -94,8 +94,7 @@ rt_err_t esp32_wlan_tx(rt_device_t dev, struct pbuf* p)
 
     if(q->next == NULL)
     {
-        ret = esp_wifi_internal_tx(emac->netif, q->payload, q->len);
-        
+        ret = esp_wifi_internal_tx(emac->netif, q->payload, q->len);        
     }
     else
     {
@@ -133,12 +132,11 @@ void esp32_wlanif_input(struct netif *netif, void *buffer, u16_t len, void* eb)
     if(!buffer || !netif)
         goto _exit;
 
-    p = pbuf_alloc(PBUF_RAW, len, PBUF_REF);
+    p = pbuf_alloc(PBUF_RAW, len, PBUF_RAM);
     if (p == NULL)
-    {
-        return;
-    }
-    p->payload = buffer;
+		goto _exit;
+
+	pbuf_take(p, buffer, len);
 
     /* full packet send to tcpip_thread to process */
     if (netif->input(p, netif) != ERR_OK) 
@@ -148,6 +146,7 @@ void esp32_wlanif_input(struct netif *netif, void *buffer, u16_t len, void* eb)
     }
 
 _exit:
+	esp_wifi_internal_free_rx_buffer(eb);
     return;
 }
 
@@ -174,3 +173,4 @@ int esp32_wlan_hw_init(esp_interface_t netif)
     return 0;
 }
 INIT_DEVICE_EXPORT(esp32_wlan_hw_init);
+
