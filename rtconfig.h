@@ -73,7 +73,12 @@
 #define DFS_FD_MAX 4
 #define RT_USING_DFS_ELMFAT
 #define RT_DFS_ELM_CODE_PAGE 437
-#define RT_DFS_ELM_MAX_LFN 256
+/* CONFIG_ELM_LFN_MODE0 is not set */
+/* CONFIG_ELM_LFN_MODE1 is not set */
+/* CONFIG_ELM_LFN_MODE2 is not set */
+#define ELM_LFN_MODE3
+#define RT_DFS_ELM_USE_LFN 3
+#define RT_DFS_ELM_MAX_LFN 255
 #define RT_DFS_ELM_DRIVES 2
 #define RT_DFS_ELM_MAX_SECTOR_SIZE 512
 /* CONFIG_RT_DFS_ELM_USE_ERASE is not set */
