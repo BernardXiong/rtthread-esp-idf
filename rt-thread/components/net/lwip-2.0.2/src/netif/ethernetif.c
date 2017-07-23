@@ -270,6 +270,7 @@ rt_err_t eth_device_init(struct eth_device * dev, char *name)
 {
     rt_uint16_t flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
 
+#if 0
 #if LWIP_IPV6_MLD && LWIP_IPV6
     struct netif* netif = dev->netif;
 
@@ -284,6 +285,7 @@ rt_err_t eth_device_init(struct eth_device * dev, char *name)
         netif->mld_mac_filter(netif, &ip6_allnodes_ll, NETIF_ADD_MAC_FILTER);
     }
 #endif /* LWIP_IPV6 && LWIP_IPV6_MLD */
+#endif
 
 #if LWIP_IGMP
     /* IGMP support */

@@ -1,6 +1,6 @@
 /*
- * File      : stk_emac.c
- *             EMAC Ethernet driver
+ * File      : drv_wlan.c
+ *             ESP32 DrvWlan driver
  * COPYRIGHT (C) 2015, Shanghai Real-Thread Electronic Technology Co.,Ltd
  *
  * Change Logs:
@@ -92,9 +92,11 @@ rt_err_t esp32_wlan_tx(rt_device_t dev, struct pbuf* p)
     emac = ESP32_WLAN_DEVICE(dev);
     RT_ASSERT(emac != RT_NULL);
 
+    // rt_kprintf("esp32 wlan tx!!!\n");
+
     if(q->next == NULL)
     {
-        ret = esp_wifi_internal_tx(emac->netif, q->payload, q->len);        
+        ret = esp_wifi_internal_tx(emac->netif, q->payload, q->len);
     }
     else
     {
@@ -134,27 +136,36 @@ void esp32_wlanif_input(struct netif *netif, void *buffer, u16_t len, void* eb)
 
     p = pbuf_alloc(PBUF_RAW, len, PBUF_RAM);
     if (p == NULL)
-		goto _exit;
+        return;
 
-	pbuf_take(p, buffer, len);
+    pbuf_take(p, buffer, len);
+    /* release low level buffer */
+    esp_wifi_internal_free_rx_buffer(eb);
 
     /* full packet send to tcpip_thread to process */
-    if (netif->input(p, netif) != ERR_OK) 
+    if (netif->input(p, netif) != ERR_OK)
     {
         LWIP_DEBUGF(NETIF_DEBUG, ("ethernetif_input: IP input error\n"));
         pbuf_free(p);
     }
 
 _exit:
-	esp_wifi_internal_free_rx_buffer(eb);
     return;
 }
 
-int esp32_wlan_hw_init(esp_interface_t netif)
+struct netif *esp32_wlan_get_interface(esp_interface_t interface)
 {
+    if (interface == _emac.netif) return _emac.parent.netif;
+
+    return NULL;
+}
+
+int esp32_wlan_hw_init(esp_interface_t netif, uint8_t *macaddr)
+{
+    memset(&_emac.parent, 0x0, sizeof(_emac.parent));
     /* set MAC address */
-    esp_wifi_get_mac(netif, &_emac.dev_addr[0]);
-    _emac.netif       = netif;
+    memcpy(_emac.dev_addr, macaddr, MAX_ADDR_LEN);
+    _emac.netif = netif;
 
     _emac.parent.parent.init       = esp32_wlan_init;
     _emac.parent.parent.open       = esp32_wlan_open;
