@@ -72,7 +72,6 @@ esp-idf/components/spi_flash/cache_utils.c
 esp-idf/components/spi_flash/spi_flash_rom_patch.c
 esp-idf/components/spi_flash/partition.c
 esp-idf/components/spi_flash/flash_mmap.c
-esp-idf/components/tcpip_adapter/tcpip_adapter_lwip.c
 esp-idf/components/ulp/ulp.c
 esp-idf/components/wpa_supplicant/src/crypto/ms_funcs.c
 esp-idf/components/wpa_supplicant/src/crypto/crypto_internal-modexp.c

@@ -104,6 +104,9 @@ void rt_hw_wifi_init()
 #include <drv_sflash.h>
 #include <drv_mmc.h>
 
+extern void lwip_system_init(void);
+extern int  eth_system_device_init(void);
+
 #include <libc.h>
 /* pre-initialization for stdio console */
 int rtthread_stdio_init(void)
@@ -124,6 +127,8 @@ int rtthread_stdio_init(void)
 int rtthread_components_init(void)
 {
     elm_init();
+    lwip_system_init();
+    eth_system_device_init();
 
     finsh_system_init();
 #ifdef RT_USING_PTHREADS
