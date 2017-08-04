@@ -7,14 +7,15 @@ RT-Thread针对ESP32的移植（使用Espressif Systems的IDF框架）
 
 ```bash
 git clone https://github.com/BernardXiong/rtthread-esp-idf
+
+cd rtthread-esp-idf
 git submodule init
 git submodule update
 
-cd rtthread-esp-idf/esp-idf-port
+cd esp-idf-port/esp-idf
 git submodule init
 git submodule update
 
-cd esp-idf
 git am ../0001-cpu_start-patch.patch
 git am ../0002-add-esp_task.h.patch
 ```
@@ -23,8 +24,20 @@ git am ../0002-add-esp_task.h.patch
 
 * Linux版本：
 
-[64位](https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-59.tar.gz)
-[32位](https://dl.espressif.com/dl/xtensa-esp32-elf-linux32-1.22.0-59.tar.gz)
+- CentOS 7::
+
+    sudo yum install git wget make ncurses-devel flex bison gperf python pyserial
+
+- Ubuntu and Debian::
+
+    sudo apt-get install git wget make libncurses-dev flex bison gperf python python-serial
+
+- Arch::
+
+    sudo pacman -S --needed gcc git make ncurses flex bison gperf python2-pyserial
+
+[64位](https://dl.espressif.com/dl/xtensa-esp32-elf-linux64-1.22.0-61-gab8375a-5.2.0.tar.gz)
+[32位](https://dl.espressif.com/dl/xtensa-esp32-elf-linux32-1.22.0-61-gab8375a-5.2.0.tar.gz)
 
 * MacOS版本
 
