@@ -8,7 +8,6 @@
 
 void tcpip_adapter_init(void)
 {
-    rt_kprintf("%s invoked\n", __FUNCTION__);
 }
 
 static esp_interface_t to_esp_interface(tcpip_adapter_if_t tcpip_if)
@@ -132,7 +131,6 @@ esp_err_t tcpip_adapter_ap_input(void *buffer, uint16_t len, void *eb)
         esp32_wlanif_input(netif, buffer, len, eb);
     }
 
-    // rt_kprintf("%s invoked\n", __FUNCTION__);
     return ESP_OK;
 }
 
@@ -144,6 +142,5 @@ esp_err_t tcpip_adapter_sta_input(void *buffer, uint16_t len, void *eb)
         esp32_wlanif_input(netif, buffer, len, eb);
     }
 
-    // rt_kprintf("%s invoked\n", __FUNCTION__);
     return ESP_OK;
 }
