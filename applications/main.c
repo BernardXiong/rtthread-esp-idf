@@ -99,11 +99,13 @@ void rt_hw_wifi_init()
 #include <dfs.h>
 #include <dfs_fs.h>
 #include <dfs_elm.h>
+#include <dfs_romfs.h>
 #include <dfs_init.h>
 #include <devfs.h>
 #include <drv_sflash.h>
 #include <drv_mmc.h>
 
+extern const struct romfs_dirent romfs_root;
 extern void lwip_system_init(void);
 extern int  eth_system_device_init(void);
 
@@ -136,19 +138,33 @@ int rtthread_components_init(void)
     pthread_system_init();
 #endif
 
-#if 0
-    rt_hw_sflash_init();
-    if (dfs_mount("flash", "/", "elm", 0, 0) == 0)
+    /* initialize romroot */
+    dfs_romfs_init();
+    /* mount rom file system */
+    if (dfs_mount(RT_NULL, "/", "rom", 0, &romfs_root) == 0)
     {
-        rt_kprintf("Mount filesystem done!\n");
+        rt_kprintf("ROM file system initializated!\n");
     }
-#endif
 
-    /* mount sd to "/" */
-    rt_hw_sdmmc_init();
-    if (dfs_mount("sd", "/", "elm", 0, 0) == 0)
+    rt_hw_sflash_init();
+    if (dfs_mount("flash", "/flash", "elm", 0, 0) == 0)
     {
-        rt_kprintf("Mount filesystem done!\n");
+        rt_kprintf("Mount flash done!\n");
+    }
+
+    /* audio */
+    io_pa_init();
+    io_pa_enable(1);
+
+    rt_hw_drv_i2c_init();
+    codec_hw_init("i2c0");
+    audio_device_init();
+
+	/* sdcard */
+    rt_hw_sdmmc_init();
+    if (dfs_mount("sd", "/sdcard", "elm", 0, 0) == 0)
+    {
+        rt_kprintf("Mount sdcard done!\n");
     }
     else
     {
@@ -157,16 +173,6 @@ int rtthread_components_init(void)
 
     return 0;
 }
-
-int libc_test(int argc, char** argv)
-{
-    printf("hello!!\n");
-    printf("libc, 100=%d, 100.5=%f\n", 100, 100.5);
-    printf("str: %s\n", "string");
-
-    return 0;
-}
-MSH_CMD_EXPORT(libc_test, libc test!!!);
 
 void app_main()
 {
@@ -177,3 +183,4 @@ void app_main()
 
     return ;
 }
+
