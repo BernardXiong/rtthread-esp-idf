@@ -117,6 +117,7 @@ SECTIONS
     build/esp-idf-port/esp-idf/components/esp32/core_dump.o(.literal .text .literal.* .text.*)
     build/esp-idf-port/esp-idf/components/esp32/heap_alloc_caps.o(.literal .text .literal.* .text.*)
     build/esp-idf-port/esp-idf/components/spi_flash/spi_flash_rom_patch.o(.literal .text .literal.* .text.*)
+    /* build/esp-idf-port/esp-idf/components/driver/i2s.o(.literal .text .literal.* .text.*) */
 
     *libphy.a:(.literal .text .literal.* .text.*)
     *librtc.a:(.literal .text .literal.* .text.*)
