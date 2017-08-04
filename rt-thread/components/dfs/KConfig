@@ -87,6 +87,10 @@ if RT_USING_DFS
         help
             Let BSD socket operated by file system API, such as read/write and involveed in select/poll POSIX APIs.
 
+    config RT_USING_DFS_ROMFS
+        bool "Using ReadOnly filesystem"
+        default n
+
     config RT_USING_DFS_NFS
         bool "Using NFS v3 client file system"
         default n
