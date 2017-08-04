@@ -69,7 +69,7 @@
 
 #define RT_USING_DFS
 #define DFS_USING_WORKDIR
-#define DFS_FILESYSTEMS_MAX 2
+#define DFS_FILESYSTEMS_MAX 4
 #define DFS_FD_MAX 4
 #define RT_USING_DFS_ELMFAT
 #define RT_DFS_ELM_CODE_PAGE 437
@@ -85,6 +85,7 @@
 #define RT_DFS_ELM_REENTRANT
 #define RT_USING_DFS_DEVFS
 /* CONFIG_RT_USING_DFS_NET is not set */
+#define RT_USING_DFS_ROMFS
 /* CONFIG_RT_USING_DFS_NFS is not set */
 
 /* Device Drivers */
@@ -159,6 +160,8 @@
 
 #define RT_USING_UART1
 #define RT_USING_UART2
+/* CONFIG_RT_USING_ESP_PSRAM is not set */
+/* CONFIG_RT_USING_I2S is not set */
 #define CONFIG_CHIP_ESP32
 #define CONFIG_BOARD_ESP32
 /* CONFIG_CONFIG_BOARD_ESP32_RTAUDIO is not set */

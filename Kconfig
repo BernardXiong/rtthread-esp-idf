@@ -27,6 +27,20 @@ config RT_USING_UART2
     bool "Enable UART2"
     default y
 
+config RT_USING_ESP_PSRAM
+    bool "Enable SPI pSRAM"
+    default n
+
+if RT_USING_ESP_PSRAM
+config RT_ESP_PSRAM_SIZE
+    int "pSRAM size (KB)"
+    default 4096
+endif
+
+config RT_USING_I2S
+    bool "Enable I2S driver"
+    default n
+
 config CONFIG_CHIP_ESP32
     bool
     default y
@@ -46,10 +60,17 @@ config CONFIG_BOARD_ESP32_RTAUDIO
 
 endchoice
 
+if CONFIG_BOARD_ESP32
+endif
+
 config RT_USING_WIFI
     bool "Support WiFi"
     default y
 
 endmenu
+
+config IDF_MBEDTLS
+    bool "Enable mbedtls in IDF"
+    default y
 
 source "$PKGS_DIR/KConfig"
