@@ -18,6 +18,7 @@ git submodule update
 
 git am ../0001-cpu_start-patch.patch
 git am ../0002-add-esp_task.h.patch
+git am ../0003-add-memset-to-0.patch
 ```
 
 # 交叉编译工具链下载
