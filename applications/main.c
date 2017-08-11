@@ -16,11 +16,28 @@
 #include <shell.h>
 #include <finsh.h>
 
+#include <dfs.h>
+#include <dfs_fs.h>
+#include <dfs_elm.h>
+#include <dfs_romfs.h>
+#include <dfs_init.h>
+#include <devfs.h>
+
 #include "esp_system.h"
 #include "esp_wifi.h"
 #include "esp_event_loop.h"
 #include "esp_log.h"
 #include "wifi_airkiss.h"
+
+#include "drv_sdram.h"
+#include "drv_i2c.h"
+#include <drv_sflash.h>
+#include <drv_mmc.h>
+
+#ifdef CONFIG_ESP_AUDIO
+#include "drv_io_pa.h"
+#include "audio_device.h"
+#endif
 
 // #define WIFI_USING_AIRKISS
 #define WIFI_SSID   "realthread_309"
@@ -96,18 +113,10 @@ void rt_hw_wifi_init()
 }
 #endif
 
-#include <dfs.h>
-#include <dfs_fs.h>
-#include <dfs_elm.h>
-#include <dfs_romfs.h>
-#include <dfs_init.h>
-#include <devfs.h>
-#include <drv_sflash.h>
-#include <drv_mmc.h>
-
 extern const struct romfs_dirent romfs_root;
 extern void lwip_system_init(void);
 extern int  eth_system_device_init(void);
+extern rt_err_t codec_hw_init(const char *name);
 
 #include <libc.h>
 /* pre-initialization for stdio console */
@@ -128,6 +137,11 @@ int rtthread_stdio_init(void)
 
 int rtthread_components_init(void)
 {
+#ifdef RT_USING_ESP_PSRAM
+	/* initialize psram */
+    rt_sdram_heap_init();
+#endif
+
     elm_init();
     lwip_system_init();
     eth_system_device_init();
@@ -152,13 +166,18 @@ int rtthread_components_init(void)
         rt_kprintf("Mount flash done!\n");
     }
 
+#ifdef RT_USING_I2C
+	rt_hw_drv_i2c_init();
+#endif
+
+#ifdef CONFIG_ESP_AUDIO
     /* audio */
     io_pa_init();
     io_pa_enable(1);
 
-    rt_hw_drv_i2c_init();
     codec_hw_init("i2c0");
     audio_device_init();
+#endif
 
 	/* sdcard */
     rt_hw_sdmmc_init();
