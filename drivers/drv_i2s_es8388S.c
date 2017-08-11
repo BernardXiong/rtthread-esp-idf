@@ -443,7 +443,7 @@ void i2s_dataqueue_thread(void* parameter)
 
     while (1)
     {
-        if (rt_data_queue_pop(&(codec->data_queue), (void**)&data_ptr, &size, RT_WAITING_FOREVER) == RT_EOK)
+        if (rt_data_queue_pop(&(codec->data_queue), (const void**)&data_ptr, &size, RT_WAITING_FOREVER) == RT_EOK)
         {
             i2s_write_bytes(codec->i2s_obj, (char*)data_ptr, size, portMAX_DELAY);
 
