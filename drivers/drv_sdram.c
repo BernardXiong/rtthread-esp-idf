@@ -5,23 +5,24 @@
 #include <rom/cache.h>
 
 #define PSRAM_BEGIN_ADDR    0x3F800000
-#define PSRAM_SIZE          (1024 * 1024 * 4)
 
+#ifdef RT_USING_ESP_PSRAM
 #define RT_USING_SDRAM
 
 #ifdef RT_USING_SDRAM
 static struct rt_memheap sdram_heap;
 #endif
+#endif
 
 /* initialize SPI pSRAM */
 int rt_sdram_heap_init(void)
 {
+#ifdef RT_USING_SDRAM
     psram_enable(PSRAM_CACHE_F40M_S40M, PSRAM_VADDR_MODE_NORMAL);
     cache_sram_mmu_set( 0, 0, PSRAM_BEGIN_ADDR, 0, 32, 128 );
 
-#ifdef RT_USING_SDRAM
     rt_memheap_init(&sdram_heap, "SPIRAM",
-        (void *)PSRAM_BEGIN_ADDR, PSRAM_SIZE);
+        (void *)PSRAM_BEGIN_ADDR, RT_ESP_PSRAM_SIZE * 1024);
 #endif
 
     return 0;

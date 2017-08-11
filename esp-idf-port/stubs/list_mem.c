@@ -2,6 +2,7 @@
 
 int list_mem(void)
 {
-    rt_kprintf("no list memory support!\n");
+    rt_kprintf("free memory : %d\n", xPortGetFreeHeapSize());
     return 0;
 }
+
