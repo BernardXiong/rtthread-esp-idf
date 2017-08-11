@@ -41,5 +41,15 @@ void rt_hw_board_init(void);
 extern unsigned xthal_get_ccount(void);
 inline uint32_t rt_hw_cpu_ms() { return xthal_get_ccount() / (CPU_CLK_FREQ_ROM / 1000); }
 
+#ifdef CONFIG_BOARD_RTIOT_AUDIO
+#define PA_GPIO			27
+#define ES8388_IIC_ADDR	0x11
+#endif
+
+#ifdef CONFIG_BOARD_LYRAT
+#define PA_GPIO			21
+#define ES8388_IIC_ADDR	0x10
+#endif
+
 #endif
 

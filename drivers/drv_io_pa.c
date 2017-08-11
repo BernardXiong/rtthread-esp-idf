@@ -1,8 +1,9 @@
 #include <rtthread.h>
+#include <board.h>
+
 #include "driver/gpio.h"
 
-#define PA_GPIO 27
-
+#ifdef PA_GPIO
 int io_pa_init(void)
 {
     gpio_config_t io_conf;
@@ -22,3 +23,5 @@ int io_pa_enable(int enable)
     gpio_set_level(PA_GPIO, enable);
     return 0;
 }
+#endif
+

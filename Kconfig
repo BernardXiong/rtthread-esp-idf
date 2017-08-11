@@ -55,13 +55,12 @@ choice CONFIG_BOARD
 
 config CONFIG_BOARD_ESP32
     bool "Espressif ESP32 board"
-config CONFIG_BOARD_ESP32_RTAUDIO
-    bool "ESP32 audio board by RT-Thread"
+config CONFIG_BOARD_RTIOT_AUDIO
+    bool "RT-IoT Audio board"
+config CONFIG_BOARD_LYRAT
+    bool "ESP32 LyraT board"
 
 endchoice
-
-if CONFIG_BOARD_ESP32
-endif
 
 config RT_USING_WIFI
     bool "Support WiFi"
