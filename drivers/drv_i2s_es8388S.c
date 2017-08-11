@@ -3,11 +3,14 @@
 #include <rthw.h>
 #include <rtthread.h>
 #include <rtdevice.h>
+#include <board.h>
 
 #include <drivers/audio.h>
 
 #include "driver/i2s.h"
 #include "driver/i2c.h"
+
+#include "codec_es8388.h"
 
 #ifdef RT_USING_FINSH
 #include <finsh.h>
@@ -26,23 +29,28 @@ FINSH_FUNCTION_EXPORT_ALIAS(es8388_reg_write_finsh, es8388, write ES8388 registe
 #define ES8388_DEBUG(...)
 #endif /* CODEC_DEBUG */
 
-#include "codec_es8388.h"
-
 #define I2S_BCK_IO      5
 #define I2S_WS_IO       25
 #define I2S_DOUT_IO     26
 #define I2S_DIN_IO      35
 
-#define codec_printf            rt_kprintf
-#define ES8388_IIC_ADDR         0x11
+#define codec_printf    rt_kprintf
 
-#define CH_MONO                 I2S_CHANNEL_FMT_ALL_RIGHT
-#define CH_STEREO               I2S_CHANNEL_FMT_RIGHT_LEFT
+#ifndef ES8388_IIC_ADDR
+#error  "no es8388"
+#endif
 
-#define I2S_DMA_PAGE_SIZE       (160*2*3)    // 2 ~ 4096
-#define I2S_DMA_PAGE_NUM        3       // Vaild number is 2~4
+// #define ES8388_IIC_ADDR 0x11
 
-#define DATA_NODE_MAX           10
+#define CH_MONO         I2S_CHANNEL_FMT_ALL_RIGHT
+#define CH_STEREO       I2S_CHANNEL_FMT_RIGHT_LEFT
+
+#define DMA_BUF_COUNT 	4
+#define DMA_BUFSZ		640
+
+#define CODEC_MODE_TX	0x01
+#define CODEC_MODE_RX	0x02
+
 /* data node for Tx Mode */
 struct codec_data_node
 {
@@ -57,64 +65,22 @@ struct codec_device
     struct rt_data_queue data_queue;
 
     i2s_port_t i2s_obj;
+	/* codec mode */
+	int mode;
 
     /* i2c mode */
     struct rt_i2c_bus_device * i2c_device;
-
-    rt_uint32_t i2s_tx_buf[I2S_DMA_PAGE_SIZE * I2S_DMA_PAGE_NUM / sizeof(rt_uint32_t)];
-    rt_uint32_t i2s_rx_buf[I2S_DMA_PAGE_SIZE * I2S_DMA_PAGE_NUM / sizeof(rt_uint32_t)];
-
-    struct rt_pipe_device record_pipe;
 };
 static struct codec_device es8388_codec;
 
-#define DMA_BUF_COUNT 	4
-#define DMA_BUFSZ		640
-
-int i2s_set_param(i2s_port_t i2s_num, int channel_num, int rate, int word_len);
-int i2s_init(i2s_port_t i2s_num);
-int i2s_enable(i2s_port_t i2s_num);
-int i2s_disable(i2s_port_t i2s_num);
-
-int i2s_enable(i2s_port_t i2s_num)
-{
-    i2s_start(i2s_num);
-    return 0;
-}
-
-int i2s_disable(i2s_port_t i2s_num)
-{
-    i2s_stop(i2s_num);
-    return 0;
-}
-
-int i2s_set_param(i2s_port_t i2s_num, int channel_num, int rate, int word_len)
-{
-    i2s_config_t i2s_config = {
-            .mode = I2S_MODE_MASTER | I2S_MODE_TX,          // Only TX
-            .sample_rate = 16000,
-            .bits_per_sample = 16,
-            .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,   // 2-channels
-            .communication_format = I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB,
-            .dma_buf_count = DMA_BUF_COUNT,                            // number of buffers, 128 max.
-            .dma_buf_len = DMA_BUFSZ,                          // size of each buffer
-            .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1        // Interrupt level 1
-    };
-
-    i2s_config.sample_rate = rate;
-    i2s_config.bits_per_sample = word_len;
-
-    i2s_param_config(i2s_num, &i2s_config);
-
-    return 0;
-}
+void wait_codec_free(void);
 
 int i2s_init(i2s_port_t i2s_num)
 {
     i2s_config_t i2s_config = {
-            .mode = I2S_MODE_MASTER | I2S_MODE_TX,          // Only TX
+            .mode = I2S_MODE_MASTER | I2S_MODE_TX,
             .sample_rate = 8000,
-            .bits_per_sample = 16,
+            .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
             .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,   // 2-channels
             .communication_format = I2S_COMM_FORMAT_I2S,
             .dma_buf_count = 4,                             // number of buffers, 128 max.
@@ -130,6 +96,25 @@ int i2s_init(i2s_port_t i2s_num)
     };
 
     i2s_driver_install(i2s_num, &i2s_config, 0, NULL);
+    i2s_set_pin(i2s_num, &pin_config);
+
+    // set MCLK
+    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
+    SET_PERI_REG_BITS(PIN_CTRL, CLK_OUT1, 0, CLK_OUT1_S);
+
+    return 0;
+}
+
+int codec_i2s_init(i2s_port_t i2s_num, const i2s_config_t *i2s_config)
+{
+    i2s_pin_config_t pin_config = {
+        .bck_io_num = I2S_BCK_IO,
+        .ws_io_num = I2S_WS_IO,
+        .data_out_num = I2S_DOUT_IO,
+        .data_in_num = I2S_DIN_IO
+    };
+
+    i2s_driver_install(i2s_num, i2s_config, 0, NULL);
     i2s_set_pin(i2s_num, &pin_config);
 
     // set MCLK
@@ -258,9 +243,6 @@ static rt_err_t codec_init(rt_device_t dev)
 {
     struct codec_device *codec = (struct codec_device *)dev;
 
-    /* initialize i2c */
-    // i2c[0] set pin: sda 21, scl 19, mode 1
-
     // set chip to slave mode
     es8388_reg_write(codec, ES8388_MASTERMODE, 0x00);       // slave mode.
 
@@ -333,19 +315,14 @@ static rt_err_t codec_init(rt_device_t dev)
 
     // CHIP I2S init
     i2s_init(codec->i2s_obj);
+	i2s_stop(codec->i2s_obj);
 
     return RT_EOK;
 }
 
 rt_err_t sample_rate(struct codec_device *codec, int sr)
 {
-    int channel_num;
-
-    channel_num = (sr & 0x01)?CH_MONO:CH_STEREO;
-
     sr &= ~(0x01);
-
-    // i2s_set_param(codec->i2s_obj, channel_num, sr, 16);
     i2s_set_sample_rates(codec->i2s_obj, sr);
 
     return RT_EOK;
@@ -353,24 +330,38 @@ rt_err_t sample_rate(struct codec_device *codec, int sr)
 
 static rt_err_t codec_open(rt_device_t dev, rt_uint16_t oflag)
 {
+	// int mode, rate, bits, ch;
     rt_err_t result = RT_EOK;
     struct codec_device *codec = (struct codec_device *)dev;
 
-#if 0
+    i2s_config_t i2s_config = {
+            .mode = I2S_MODE_MASTER,
+            .sample_rate = 16000,
+            .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
+            .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,   // 2-channels
+            .communication_format = I2S_COMM_FORMAT_I2S,
+            .dma_buf_count = 8,                             // number of buffers, 128 max.
+            .dma_buf_len = 320,                             // size of each buffer
+            .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1        // Interrupt level 1
+    };
+
     if (oflag & RT_DEVICE_OFLAG_RDONLY)
     {
-        result = rt_device_open(&codec->record_pipe.parent, RT_DEVICE_OFLAG_RDONLY);
+		codec->mode |= CODEC_MODE_RX;
+		i2s_config.mode |= I2S_MODE_RX;
+		i2s_config.channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT;
     }
 
-    if(result != RT_EOK)
-    {
-        rt_kprintf("open record pipe result: %d\n", result);
-        return result;
-    }
-#endif
+	if (oflag & RT_DEVICE_OFLAG_WRONLY)
+	{
+		codec->mode |= CODEC_MODE_TX;
+		i2s_config.mode |= I2S_MODE_TX;
+		i2s_config.channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT;
+	}
 
-    /* enable I2S */
-    // i2s_enable(codec->i2s_obj);
+    /* re-init codec */
+	if (codec_i2s_init(codec->i2s_obj, &i2s_config) != ESP_OK)
+		result = -RT_EIO;
 
     return result;
 }
@@ -380,16 +371,15 @@ static rt_err_t codec_close(rt_device_t dev)
     rt_err_t result = RT_EOK;
     struct codec_device *codec = (struct codec_device *)dev;
 
-    if(dev->open_flag & RT_DEVICE_OFLAG_RDONLY)
-    {
-        result = rt_device_close(&codec->record_pipe.parent);
-    }
+	/* wait codec freed */
+	if (codec->mode & CODEC_MODE_TX)
+		wait_codec_free();
 
-    if(result != RT_EOK)
-    {
-        rt_kprintf("close record pipe result: %d\n", result);
-        return result;
-    }
+	/* clean codec mode */
+	codec->mode = 0;
+
+	/* disable i2s */
+	i2s_driver_uninstall(codec->i2s_obj);
 
     return result;
 }
@@ -426,9 +416,11 @@ static rt_err_t codec_control(rt_device_t dev, rt_uint8_t cmd, void *args)
 static rt_size_t codec_read(rt_device_t dev, rt_off_t pos,
                              void* buffer, rt_size_t size)
 {
+	rt_size_t read_bytes = 0;
     struct codec_device *codec = (struct codec_device *)dev;
 
-    return rt_device_read(&codec->record_pipe.parent, pos, buffer, size);
+	read_bytes = i2s_read_bytes(codec->i2s_obj, buffer, size, portMAX_DELAY);
+    return read_bytes;
 }
 
 static rt_size_t codec_write(rt_device_t dev, rt_off_t pos,
@@ -437,7 +429,6 @@ static rt_size_t codec_write(rt_device_t dev, rt_off_t pos,
     struct codec_device *codec = (struct codec_device *)dev;
 
     rt_data_queue_push(&(codec->data_queue), buffer, size, RT_WAITING_FOREVER);
-
     return size;
 }
 
@@ -501,7 +492,8 @@ rt_err_t codec_hw_init(const char * i2c_bus_device_name)
     }
 
     /* register the device */
-    rt_device_register(&codec->parent, "sound", RT_DEVICE_FLAG_WRONLY | RT_DEVICE_FLAG_DMA_TX);
+    rt_device_register(&codec->parent, "sound", 
+    	RT_DEVICE_FLAG_STANDALONE | RT_DEVICE_FLAG_WRONLY | RT_DEVICE_FLAG_DMA_TX);
     rt_device_init(&codec->parent);
 
     return RT_EOK;

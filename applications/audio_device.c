@@ -93,7 +93,7 @@ int audio_device_init(void)
 
     /* set tx complete call back function */
     rt_device_set_tx_complete(_audio_device->snd, audio_device_write_done);
-    rt_device_open(_audio_device->snd, RT_DEVICE_OFLAG_WRONLY);
+    // rt_device_open(_audio_device->snd, RT_DEVICE_OFLAG_WRONLY);
 
     return 0;
 }
@@ -160,10 +160,13 @@ void audio_device_wait_free(void)
 void audio_device_open(void)
 {
     _audio_device->state = AUDIO_DEVICE_IDLE;
+    rt_device_open(_audio_device->snd, RT_DEVICE_OFLAG_WRONLY);
 }
 
 void audio_device_close(void)
 {
+	rt_device_close(_audio_device->snd);
+
     if (_audio_device->state == AUDIO_DEVICE_PLAYBACK)
     {
         if (_audio_device->evt_handler)
@@ -173,3 +176,4 @@ void audio_device_close(void)
     /* set to idle */
     _audio_device->state = AUDIO_DEVICE_CLOSE;
 }
+
