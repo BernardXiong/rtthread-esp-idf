@@ -50,7 +50,6 @@ _fork_r(struct _reent *ptr)
 int
 _fstat_r(struct _reent *ptr, int fd, struct stat *pstat)
 {
-	rt_kprintf("_fstat_r, fd=%d\n", fd);
 	if (fd == 0)
 	{
 		pstat->st_mode = S_IFCHR;
@@ -59,14 +58,6 @@ _fstat_r(struct _reent *ptr, int fd, struct stat *pstat)
 	
     return fstat(fd, pstat);
 }
-
-#if 0
-int
-_getpid_r(struct _reent *ptr)
-{
-    return 0;
-}
-#endif
 
 int
 _isatty_r(struct _reent *ptr, int fd)
