@@ -154,6 +154,7 @@ int audio_device_get_volume(void)
 
 void audio_device_wait_free(void)
 {
+	extern void wait_codec_free(void);
     wait_codec_free();
 }
 
