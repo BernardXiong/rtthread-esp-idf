@@ -54,7 +54,7 @@ int wavplay(int argc, char** argv)
 
     if (argc != 2)
     {
-    	printf("Usage:\n");
+        printf("Usage:\n");
         printf("wavplay song.wav\n");
         return 0;
     }
@@ -70,7 +70,6 @@ int wavplay(int argc, char** argv)
     if (fread(&(info->data_block), sizeof(struct DATA_BLOCK_DEF),  1, fp) != 1) goto __exit;
 
     audio_device_open();
-	// audio_device_set_volume(40);
     audio_device_set_rate(info->fmt_block.wav_format.SamplesPerSec);
 
     while (!feof(fp))
@@ -82,6 +81,22 @@ int wavplay(int argc, char** argv)
         length = fread(buffer, 1, BUFSZ, fp);
         if (length)
         {
+            if (info->fmt_block.wav_format.Channels == 1)
+            {
+                /* extend to stereo channels */
+                int index;
+                uint16_t *ptr;
+
+                ptr = (uint16_t*)((uint8_t*)buffer + BUFSZ * 2);
+                for (index = 1; index < BUFSZ/2; index ++)
+                {
+                    *ptr = *(ptr - 1) = buffer[BUFSZ/2 - index];
+                    ptr -= 2;
+                }
+
+                length = length * 2;
+            }
+
             audio_device_write((uint8_t*)buffer, length);
         }
         else
@@ -99,4 +114,3 @@ __exit:
     return 0;
 }
 MSH_CMD_EXPORT(wavplay, wavplay song.wav);
-
