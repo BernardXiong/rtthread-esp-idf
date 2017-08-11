@@ -152,7 +152,7 @@ __exit:
 RTM_EXPORT(rt_data_queue_push);
 
 rt_err_t rt_data_queue_pop(struct rt_data_queue *queue,
-                           void** data_ptr,
+                           const void **data_ptr,
                            rt_size_t *size, 
                            rt_int32_t timeout)
 {

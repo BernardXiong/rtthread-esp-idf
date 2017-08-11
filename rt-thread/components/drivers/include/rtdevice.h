@@ -288,7 +288,7 @@ rt_err_t rt_data_queue_push(struct rt_data_queue *queue,
                             rt_size_t             data_size,
                             rt_int32_t            timeout);
 rt_err_t rt_data_queue_pop(struct rt_data_queue *queue,
-                           void                 **data_ptr,
+                           const void           **data_ptr,
                            rt_size_t            *size,
                            rt_int32_t            timeout);
 rt_err_t rt_data_queue_peak(struct rt_data_queue *queue,
