@@ -156,20 +156,6 @@
 
 /* CONFIG_RT_USING_MODBUS is not set */
 
-/* Board Support Package */
-
-#define RT_USING_UART1
-#define RT_USING_UART2
-#define RT_USING_ESP_PSRAM
-#define RT_ESP_PSRAM_SIZE 4096
-#define RT_USING_I2S
-#define CONFIG_CHIP_ESP32
-/* CONFIG_CONFIG_BOARD_ESP32 is not set */
-#define CONFIG_BOARD_RTIOT_AUDIO
-/* CONFIG_CONFIG_BOARD_LYRAT is not set */
-#define RT_USING_WIFI
-/* CONFIG_IDF_MBEDTLS is not set */
-
 /* RT-Thread online packages */
 
 /* IoT - internet of things */
@@ -186,6 +172,17 @@
 
 /* system packages */
 
+#define RT_USING_UART1
+#define RT_USING_UART2
+#define RT_USING_ESP_PSRAM
+#define RT_ESP_PSRAM_SIZE 4096
+#define CONFIG_ESP_AUDIO
+#define CONFIG_CHIP_ESP32
+/* CONFIG_CONFIG_BOARD_ESP32 is not set */
+#define CONFIG_BOARD_RTIOT_AUDIO
+/* CONFIG_CONFIG_BOARD_LYRAT is not set */
+#define RT_USING_WIFI
+/* CONFIG_IDF_MBEDTLS is not set */
 #include "rtconfig_project.h"
 
 #endif

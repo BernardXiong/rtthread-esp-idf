@@ -16,8 +16,7 @@ config $PKGS_DIR
     default "packages"
 
 source "$RTT_DIR/KConfig"
-
-menu "Board Support Package"
+source "$PKGS_DIR/KConfig"
 
 config RT_USING_UART1
     bool "Enable UART1"
@@ -37,8 +36,8 @@ config RT_ESP_PSRAM_SIZE
     default 4096
 endif
 
-config RT_USING_I2S
-    bool "Enable I2S driver"
+config CONFIG_ESP_AUDIO
+    bool "Enable ESP Audio feature, I2S"
     default n
 
 config CONFIG_CHIP_ESP32
@@ -57,8 +56,10 @@ config CONFIG_BOARD_ESP32
     bool "Espressif ESP32 board"
 config CONFIG_BOARD_RTIOT_AUDIO
     bool "RT-IoT Audio board"
+    select CONFIG_ESP_AUDIO
 config CONFIG_BOARD_LYRAT
     bool "ESP32 LyraT board"
+    select CONFIG_ESP_AUDIO
 
 endchoice
 
@@ -66,10 +67,6 @@ config RT_USING_WIFI
     bool "Support WiFi"
     default y
 
-endmenu
-
 config IDF_MBEDTLS
     bool "Enable mbedtls in IDF"
     default y
-
-source "$PKGS_DIR/KConfig"
