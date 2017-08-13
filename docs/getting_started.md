@@ -62,26 +62,23 @@ git am ../0003-add-memset-to-0.patch
 ## 2.2 安装编译工具
 
 源代码准备好了，下面就要编译了.
- * 首先要下载编译工具，根据README.md中的说明，下载对应的版本，Windows下为
-https://dl.espressif.com/dl/xtensa-esp32-elf-win32-1.22.0-59.zip
+ * 首先要下载编译工具，根据README.md中的说明，下载对应的版本。  
+ Windows下可以到 http://esp-idf.readthedocs.io/en/latest/get-started/windows-setup-scratch.html# 最下方找到最新版的编译工具，目前最新版为 https://dl.espressif.com/dl/xtensa-esp32-elf-win32-1.22.0-61-gab8375a-5.2.0.zip
 
- * 下载编译环境env，可以在RT-Thread/ESP32的QQ群的群文件里可以下载env-20170625.zip，使用env比手动配置工具更加方便:
+ * 下载编译环境env，可以在RT-Thread/ESP32的QQ群的群文件里可以下载env-2017xxxx.zip，使用env比手动配置工具更加方便:
     * 可以通过menuconfig配置rt-thread
     * 自带配置好的Python和scons
     * 自动配置编译器的路径
 
-下载后解压env-20170625.zip到env目录
+下载后解压env-2017xxxx.zip到env目录
 
 ![env](assets/getting_started-6b28db9c.png)  
 
-* 将xtensa-esp32-elf-win32-1.22.0-59.zip解压
+* 将xtensa-esp32-elf-win32-xxx.zip解压
 * 将xtensa-esp32-elf整个目录复制到`env\tools`目录下
 * 重命名为gnu_gcc
 
 ![](assets/getting_started-361fab64.png)  
-
-请确保env根目录下的env.xml中存在`{{CWD}}tools\Python27\Scripts`路径，此路径会影响console.exe中的`%PATH%`变量，如果没有会找不到scons命令。
-![](assets/getting_started-99425d9d.png)
 
 # 3. 配置、编译、烧录
 ## 3.1 配置
