@@ -8,4 +8,12 @@
 #include "freertos/StackMacros.h"
 #include "freertos/xtensa_rtos.h"
 
+#include "sdkconfig.h"
+#ifdef RT_TICK_PER_SECOND
+#undef RT_TICK_PER_SECOND
 #endif
+
+#define RT_TICK_PER_SECOND	CONFIG_FREERTOS_HZ
+
+#endif
+
