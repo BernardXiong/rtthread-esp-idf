@@ -123,8 +123,15 @@ struct _reent* __getreent()
     return _GLOBAL_REENT;
 }
 
-void *rt_malloc(rt_size_t nbytes) { return pvPortMalloc(nbytes); }
-void rt_free(void *ptr) { vPortFree(ptr); }
+void *rt_malloc(rt_size_t nbytes) 
+{
+	return pvPortMalloc(nbytes); 
+}
+
+void rt_free(void *ptr) 
+{ 
+	vPortFree(ptr); 
+}
 
 BaseType_t xTaskCreatePinnedToCore(TaskFunction_t pxTaskCode, const char * const pcName, const uint32_t usStackDepth, void * const pvParameters, UBaseType_t uxPriority, TaskHandle_t * const pxCreatedTask, const BaseType_t xCoreID )
 {
@@ -294,6 +301,7 @@ QueueHandle_t xQueueGenericCreate( const UBaseType_t uxQueueLength, const UBaseT
 {
     char name[10] = {0};
     rt_object_t obj = 0;
+
     if (uxItemSize <= 0 || uxQueueLength <= 0)
     {
         if (ucQueueType == queueQUEUE_TYPE_MUTEX || ucQueueType == queueQUEUE_TYPE_RECURSIVE_MUTEX)
@@ -403,12 +411,19 @@ BaseType_t xQueueGenericReceive( QueueHandle_t xQueue, void * const pvBuffer, Ti
                 obj->name,xTicksToWait,xJustPeeking);
 #endif
     rt_err_t err = RT_EOK;
+	rt_int32_t timeout;
+
+	if (xTicksToWait == portMAX_DELAY)
+		timeout = RT_WAITING_FOREVER;
+	else
+		timeout = xTicksToWait;
+
     if (obj->type == RT_Object_Class_Semaphore)
-        err = rt_sem_take((rt_sem_t)obj,xTicksToWait);
+        err = rt_sem_take((rt_sem_t)obj,timeout);
     else if (obj->type == RT_Object_Class_Mutex)
-        err = rt_mutex_take((rt_mutex_t)obj,xTicksToWait);
+        err = rt_mutex_take((rt_mutex_t)obj,timeout);
     else
-        err = rt_fmq_recv((rt_mailbox_t)obj,(void *)pvBuffer,xJustPeeking,xTicksToWait);
+        err = rt_fmq_recv((rt_mailbox_t)obj,(void *)pvBuffer,xJustPeeking,timeout);
 #ifdef SHOW_QUE_DEBUG_INFO
     ets_printf("QueueRecvOver cur:%s name:%s ret:%d\n",
                 (rt_current_thread)?(rt_current_thread->name):("NULL"),
