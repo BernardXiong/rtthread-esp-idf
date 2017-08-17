@@ -50,12 +50,12 @@ _fork_r(struct _reent *ptr)
 int
 _fstat_r(struct _reent *ptr, int fd, struct stat *pstat)
 {
-	if (fd == 0)
-	{
-		pstat->st_mode = S_IFCHR;
-		return 0;
-	}
-	
+    if (fd == 0)
+    {
+        pstat->st_mode = S_IFCHR;
+        return 0;
+    }
+
     return fstat(fd, pstat);
 }
 
