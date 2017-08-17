@@ -41,6 +41,8 @@
 #include "audio_device.h"
 #endif
 
+#include <user_com.h>
+
 extern const struct romfs_dirent romfs_root;
 extern void lwip_system_init(void);
 extern rt_err_t codec_hw_init(const char *name);
@@ -138,7 +140,7 @@ int rtthread_stdio_init(void)
 int rtthread_components_init(void)
 {
 #ifdef RT_USING_ESP_PSRAM
-	/* initialize psram */
+    /* initialize psram */
     rt_sdram_heap_init();
 #endif
 
@@ -167,7 +169,8 @@ int rtthread_components_init(void)
     }
 
 #ifdef RT_USING_I2C
-	rt_hw_drv_i2c_init();
+    rt_hw_drv_i2c_init();
+	codec_hw_init("i2c0");
 #endif
 
 #ifdef CONFIG_ESP_AUDIO
@@ -175,11 +178,10 @@ int rtthread_components_init(void)
     io_pa_init();
     io_pa_enable(1);
 
-    codec_hw_init("i2c0");
-    audio_device_init();
+	audio_device_init();
 #endif
 
-	/* sdcard */
+    /* sdcard */
     rt_hw_sdmmc_init();
     if (dfs_mount("sd", "/sdcard", "elm", 0, 0) == 0)
     {
@@ -190,7 +192,36 @@ int rtthread_components_init(void)
         rt_kprintf("mount failed, errno=%d\n", rt_get_errno());
     }
 
+    /* user commponents intialization */
+    user_components_init();
+
     return 0;
+}
+
+#include "lwipopts.h"
+#include "lwip/inet.h"
+#include "lwip/ip_addr.h"
+
+static void netif_status_callback(struct netif *netif)
+{
+	system_event_t evt;
+
+	printf("netif status changed %s\n", ip4addr_ntoa(netif_ip4_addr(netif)));
+
+	if (!ip4_addr_cmp(ip_2_ip4(&netif->ip_addr), ip_2_ip4(IP4_ADDR_ANY)))
+	{
+		tcpip_adapter_ip_info_t _ip_info, *ip_info;
+		ip_info = &_ip_info;
+
+		evt.event_id = SYSTEM_EVENT_STA_GOT_IP;
+		ip4_addr_set(&ip_info->ip, ip_2_ip4(&netif->ip_addr));
+		ip4_addr_set(&ip_info->netmask, ip_2_ip4(&netif->netmask));
+		ip4_addr_set(&ip_info->gw, ip_2_ip4(&netif->gw));
+		
+		memcpy(&evt.event_info.got_ip.ip_info, ip_info, sizeof(tcpip_adapter_ip_info_t));
+		
+		esp_event_send(&evt);
+	}
 }
 
 void app_main()
@@ -199,6 +230,9 @@ void app_main()
 
     rtthread_components_init();
     rt_hw_wifi_init();
+
+	if (netif_default)
+		netif_set_status_callback(netif_default, netif_status_callback);
 
     return ;
 }
