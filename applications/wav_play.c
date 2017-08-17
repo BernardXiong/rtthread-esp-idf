@@ -69,6 +69,10 @@ int wavplay(int argc, char** argv)
     if (fread(&(info->fmt_block),  sizeof(struct FMT_BLOCK_DEF),   1, fp) != 1) goto __exit;
     if (fread(&(info->data_block), sizeof(struct DATA_BLOCK_DEF),  1, fp) != 1) goto __exit;
 
+    printf("wav information:\n");
+    printf("     samplerate %d\n", info->fmt_block.wav_format.SamplesPerSec);
+	printf("        channel %d\n", info->fmt_block.wav_format.Channels);
+	
     audio_device_open();
     audio_device_set_rate(info->fmt_block.wav_format.SamplesPerSec);
 
