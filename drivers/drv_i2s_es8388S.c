@@ -487,7 +487,7 @@ rt_err_t codec_hw_init(const char * i2c_bus_device_name)
     {
         rt_thread_t tid;
         tid = rt_thread_create("es8388", i2s_dataqueue_thread, RT_NULL,
-            1024, 8, 10);
+            2048, 8, 10);
         if (tid) rt_thread_startup(tid);
     }
 
