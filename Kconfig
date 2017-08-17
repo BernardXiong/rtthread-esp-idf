@@ -57,9 +57,11 @@ config CONFIG_BOARD_ESP32
 config CONFIG_BOARD_RTIOT_AUDIO
     bool "RT-IoT Audio board"
     select CONFIG_ESP_AUDIO
+    select RT_USING_ESP_PSRAM
 config CONFIG_BOARD_LYRAT
     bool "ESP32 LyraT board"
     select CONFIG_ESP_AUDIO
+    select RT_USING_ESP_PSRAM
 
 endchoice
 
@@ -70,3 +72,5 @@ config RT_USING_WIFI
 config IDF_MBEDTLS
     bool "Enable mbedtls in IDF"
     default y
+
+source "$BSP_DIR/components/Kconfig"

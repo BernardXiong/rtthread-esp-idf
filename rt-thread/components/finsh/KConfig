@@ -26,6 +26,18 @@ config FINSH_DEFAULT_PASSWORD
     string "The default password for shell authentication"
     default "rtthread"
 
+config FINSH_CMD_SIZE
+    int "The size of command line"
+    default 80
+
+config FINSH_THREAD_STACK_SIZE
+    int "The stack size of shell task"
+    default 2048
+
+config FINSH_THREAD_PRIORITY
+    int "The priority level of shell task"
+    default 20
+
 config FINSH_USING_MSH
     bool "Using module shell"
     default y
