@@ -57,10 +57,8 @@ git am ../0003-add-memset-to-0.patch
 
 # 编译
 
-1. 修改根目录下"rtconfig.py"文件内EXEC_PATH = r'D:\tools\msys32\opt\xtensa-esp32-elf\bin'为xtensa-esp32-elf交叉编译器所在目录
-2. 在命令行下使用scons命令编译
-3. 使用python esp-idf/components/esptool_py/esptool/esptool.py --chip esp32 elf2image --flash_mode "dio" --flash_freq "40m" --flash_size "4MB"  -o rtthread.bin rtthread-esp32.elf命令生成bin文件
-4. 也可直接使用make命令在根目录下编译并生成rtthread.bin文件
+1. 修改根目录下"rtconfig.py"文件内EXEC_PATH = r'D:\tools\msys32\opt\xtensa-esp32-elf\bin'为xtensa-esp32-elf交叉编译器所在目录；
+2. 在命令行下使用scons命令编译并生成bin文件；
 
 # rt-iot audio开发板烧录
 
