@@ -5,6 +5,9 @@ src = Glob('*.c')
 
 CPPPATH = [cwd]
 
+if not GetDepend('CONFIG_ESP_AUDIO'):
+    SrcRemove(src, ['drv_i2s_es8388S.c', 'drv_io_pa.c'])
+
 group = DefineGroup('Drivers', src, depend = [''], CPPPATH = CPPPATH)
 
 Return('group')
