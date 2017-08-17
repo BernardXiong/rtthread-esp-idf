@@ -35,6 +35,7 @@
 #include "drv_i2c.h"
 #include <drv_sflash.h>
 #include <drv_mmc.h>
+#include <drv_gpio.h>
 
 #ifdef CONFIG_ESP_AUDIO
 #include "drv_io_pa.h"
@@ -144,6 +145,7 @@ int rtthread_components_init(void)
     rt_sdram_heap_init();
 #endif
 
+	esp32_hw_pin_init();
     elm_init();
     lwip_system_init();
     eth_system_device_init();
@@ -236,4 +238,46 @@ void app_main()
 
     return ;
 }
+
+#include <rtdevice.h>
+
+int led_inited = 0;
+void led_init(void)
+{
+	rt_pin_mode(19, PIN_MODE_OUTPUT);
+}
+
+int led(int argc, char** argv)
+{
+	int value;
+	int pin = 19;
+
+	if (!led_inited) 
+	{
+		led_inited = 1;
+		led_init();
+	}
+	
+	if (argc >= 2) pin = atoi(argv[1]);
+	if (argc >= 3) 
+	{
+		value = atoi(argv[2]);
+		rt_pin_write(pin, value);
+
+		value = rt_pin_read(pin);
+		rt_kprintf("read back value=%d\n", value);
+		
+		return 0;
+	}
+
+	value = rt_pin_read(pin);
+	rt_kprintf("value=%d\n", value);
+	if (value)
+		rt_pin_write(pin, PIN_LOW);
+	else
+		rt_pin_write(pin, PIN_HIGH);
+
+	return 0;
+}
+MSH_CMD_EXPORT(led, led test);
 
