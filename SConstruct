@@ -14,6 +14,9 @@ IDF_PATH = os.path.normpath(os.getcwd() + 'idf-esp32')
 
 TARGET = 'rtthread-%s.%s' % ('esp32', rtconfig.TARGET_EXT)
 
+convert = 'python esp-idf-port/esp-idf/components/esptool_py/esptool/esptool.py --chip esp32 elf2image --flash_mode "dio" --flash_freq "40m" --flash_size "4MB"  -o $TARGET $SOURCE'
+cvt= Builder(action = convert)
+
 env = Environment(tools = ['mingw'],
     AS = rtconfig.AS, ASFLAGS = rtconfig.AFLAGS,
     CC = rtconfig.CC, CFLAGS = rtconfig.CFLAGS,
@@ -21,6 +24,7 @@ env = Environment(tools = ['mingw'],
     AR = rtconfig.AR, ARFLAGS = '-rc',
     LINK = rtconfig.LINK, LINKFLAGS = rtconfig.LFLAGS)
 env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
+env.Append(BUILDERS = {'ConvertELF': cvt})
 
 Export('RTT_ROOT')
 Export('rtconfig')
@@ -32,3 +36,4 @@ objs = PrepareBuilding(env, RTT_ROOT, has_libcpu=True)
 
 # make a building
 program = DoBuilding(TARGET, objs)
+binfile = env.ConvertELF('rtthread.bin', TARGET)
