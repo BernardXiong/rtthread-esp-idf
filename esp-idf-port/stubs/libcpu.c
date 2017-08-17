@@ -125,12 +125,22 @@ struct _reent* __getreent()
 
 void *rt_malloc(rt_size_t nbytes) 
 {
-	return pvPortMalloc(nbytes); 
+	return malloc(nbytes);
 }
 
 void rt_free(void *ptr) 
 { 
-	vPortFree(ptr); 
+	free(ptr);
+}
+
+void *rt_realloc(void *rmem, rt_size_t newsize)
+{
+	return realloc(rmem, newsize);
+}
+
+void *rt_calloc(rt_size_t count, rt_size_t size)
+{
+	return calloc(count, size);
 }
 
 BaseType_t xTaskCreatePinnedToCore(TaskFunction_t pxTaskCode, const char * const pcName, const uint32_t usStackDepth, void * const pvParameters, UBaseType_t uxPriority, TaskHandle_t * const pxCreatedTask, const BaseType_t xCoreID )
