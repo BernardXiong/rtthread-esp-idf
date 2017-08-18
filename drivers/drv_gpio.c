@@ -106,7 +106,7 @@ int esp32_hw_pin_init(void)
 {
     int result;
 
-	gpio_install_isr_service(0);
+	// gpio_install_isr_service(0);
     result = rt_device_pin_register("gpio", &_esp32_gpio_ops, RT_NULL);
     return result;
 }
