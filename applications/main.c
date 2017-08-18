@@ -172,7 +172,6 @@ int rtthread_components_init(void)
 
 #ifdef RT_USING_I2C
     rt_hw_drv_i2c_init();
-	codec_hw_init("i2c0");
 #endif
 
 #ifdef CONFIG_ESP_AUDIO
@@ -180,6 +179,7 @@ int rtthread_components_init(void)
     io_pa_init();
     io_pa_enable(1);
 
+	codec_hw_init("i2c0");
 	audio_device_init();
 #endif
 
@@ -238,46 +238,4 @@ void app_main()
 
     return ;
 }
-
-#include <rtdevice.h>
-
-int led_inited = 0;
-void led_init(void)
-{
-	rt_pin_mode(19, PIN_MODE_OUTPUT);
-}
-
-int led(int argc, char** argv)
-{
-	int value;
-	int pin = 19;
-
-	if (!led_inited) 
-	{
-		led_inited = 1;
-		led_init();
-	}
-	
-	if (argc >= 2) pin = atoi(argv[1]);
-	if (argc >= 3) 
-	{
-		value = atoi(argv[2]);
-		rt_pin_write(pin, value);
-
-		value = rt_pin_read(pin);
-		rt_kprintf("read back value=%d\n", value);
-		
-		return 0;
-	}
-
-	value = rt_pin_read(pin);
-	rt_kprintf("value=%d\n", value);
-	if (value)
-		rt_pin_write(pin, PIN_LOW);
-	else
-		rt_pin_write(pin, PIN_HIGH);
-
-	return 0;
-}
-MSH_CMD_EXPORT(led, led test);
 

@@ -108,6 +108,7 @@ rt_err_t rt_pin_attach_irq(rt_int32_t pin, rt_uint32_t mode,
     }
     return RT_ENOSYS;
 }
+
 rt_err_t rt_pin_dettach_irq(rt_int32_t pin)
 {
     RT_ASSERT(_hw_pin.ops != RT_NULL);
@@ -117,7 +118,8 @@ rt_err_t rt_pin_dettach_irq(rt_int32_t pin)
     }
     return RT_ENOSYS;
 }
-rt_err_t pin_irq_enable(rt_base_t pin, rt_uint32_t enabled)
+
+rt_err_t rt_pin_irq_enable(rt_base_t pin, rt_uint32_t enabled)
 {
     RT_ASSERT(_hw_pin.ops != RT_NULL);
     if(_hw_pin.ops->pin_irq_enable)
@@ -126,6 +128,7 @@ rt_err_t pin_irq_enable(rt_base_t pin, rt_uint32_t enabled)
     }
     return RT_ENOSYS;
 }
+
 /* RT-Thread Hardware PIN APIs */
 void rt_pin_mode(rt_base_t pin, rt_base_t mode)
 {
@@ -147,3 +150,4 @@ int  rt_pin_read(rt_base_t pin)
     return _hw_pin.ops->pin_read(&_hw_pin.parent, pin);
 }
 FINSH_FUNCTION_EXPORT_ALIAS(rt_pin_read, pinRead, read status from hardware pin);
+

@@ -43,11 +43,13 @@ inline uint32_t rt_hw_cpu_ms() { return xthal_get_ccount() / (CPU_CLK_FREQ_ROM /
 
 #ifdef CONFIG_BOARD_RTIOT_AUDIO
 #define PA_GPIO			27
+#define BTN_GPIO		2
 #define ES8388_IIC_ADDR	0x11
 #endif
 
 #ifdef CONFIG_BOARD_LYRAT
 #define PA_GPIO			21
+#define BTN_GPIO		0
 #define ES8388_IIC_ADDR	0x10
 #endif
 
