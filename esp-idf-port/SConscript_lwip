@@ -57,6 +57,7 @@ esp-idf/components/lwip/port/debug/lwip_debug.c
 esp-idf/components/lwip/port/freertos/sys_arch.c
 esp-idf/components/lwip/port/netif/ethernetif.c
 esp-idf/components/lwip/port/netif/wlanif.c
+esp-idf/components/tcpip_adapter/tcpip_adapter_lwip.c
 ''')
 
 CPPPATH = [
@@ -66,6 +67,6 @@ cwd + '/esp-idf/components/lwip/include/lwip/posix',
 cwd + '/esp-idf/components/lwip/apps/ping',
 ]
 
-group = DefineGroup('esp-idf', src, depend = [''], CPPPATH = CPPPATH)
+group = DefineGroup('esp-idf', src, depend = ['IDF_LWIP'], CPPPATH = CPPPATH)
 
 Return('group')

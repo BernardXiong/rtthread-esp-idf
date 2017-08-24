@@ -1,0 +1,12 @@
+menu "components in IDF of Espressif"
+
+config IDF_MBEDTLS
+    bool "Enable mbedtls in IDF"
+    default y
+
+
+config IDF_LWIP
+    bool "Use lwIP inside IDF"
+    default n
+
+endmenu

@@ -23,7 +23,9 @@
 #include <dfs_romfs.h>
 #include <dfs_init.h>
 #include <devfs.h>
+#ifndef IDF_LWIP
 #include <ethernetif.h>
+#endif
 
 #include "esp_system.h"
 #include "esp_wifi.h"
@@ -145,10 +147,12 @@ int rtthread_components_init(void)
     rt_sdram_heap_init();
 #endif
 
-	esp32_hw_pin_init();
+    esp32_hw_pin_init();
     elm_init();
+#ifndef IDF_LWIP
     lwip_system_init();
     eth_system_device_init();
+#endif
 
     finsh_system_init();
 #ifdef RT_USING_PTHREADS
@@ -179,8 +183,8 @@ int rtthread_components_init(void)
     io_pa_init();
     io_pa_enable(1);
 
-	codec_hw_init("i2c0");
-	audio_device_init();
+    codec_hw_init("i2c0");
+    audio_device_init();
 #endif
 
     /* sdcard */
@@ -200,31 +204,33 @@ int rtthread_components_init(void)
     return 0;
 }
 
+#ifndef IDF_LWIP
 #include "lwipopts.h"
 #include "lwip/inet.h"
 #include "lwip/ip_addr.h"
 
 static void netif_status_callback(struct netif *netif)
 {
-	system_event_t evt;
+    system_event_t evt;
 
-	printf("netif status changed %s\n", ip4addr_ntoa(netif_ip4_addr(netif)));
+    printf("netif status changed %s\n", ip4addr_ntoa(netif_ip4_addr(netif)));
 
-	if (!ip4_addr_cmp(ip_2_ip4(&netif->ip_addr), ip_2_ip4(IP4_ADDR_ANY)))
-	{
-		tcpip_adapter_ip_info_t _ip_info, *ip_info;
-		ip_info = &_ip_info;
+    if (!ip4_addr_cmp(ip_2_ip4(&netif->ip_addr), ip_2_ip4(IP4_ADDR_ANY)))
+    {
+        tcpip_adapter_ip_info_t _ip_info, *ip_info;
+        ip_info = &_ip_info;
 
-		evt.event_id = SYSTEM_EVENT_STA_GOT_IP;
-		ip4_addr_set(&ip_info->ip, ip_2_ip4(&netif->ip_addr));
-		ip4_addr_set(&ip_info->netmask, ip_2_ip4(&netif->netmask));
-		ip4_addr_set(&ip_info->gw, ip_2_ip4(&netif->gw));
-		
-		memcpy(&evt.event_info.got_ip.ip_info, ip_info, sizeof(tcpip_adapter_ip_info_t));
-		
-		esp_event_send(&evt);
-	}
+        evt.event_id = SYSTEM_EVENT_STA_GOT_IP;
+        ip4_addr_set(&ip_info->ip, ip_2_ip4(&netif->ip_addr));
+        ip4_addr_set(&ip_info->netmask, ip_2_ip4(&netif->netmask));
+        ip4_addr_set(&ip_info->gw, ip_2_ip4(&netif->gw));
+
+        memcpy(&evt.event_info.got_ip.ip_info, ip_info, sizeof(tcpip_adapter_ip_info_t));
+
+        esp_event_send(&evt);
+    }
 }
+#endif
 
 void app_main()
 {
@@ -233,8 +239,10 @@ void app_main()
     rtthread_components_init();
     rt_hw_wifi_init();
 
-	if (netif_default)
-		netif_set_status_callback(netif_default, netif_status_callback);
+#ifndef IDF_LWIP
+    if (netif_default)
+        netif_set_status_callback(netif_default, netif_status_callback);
+#endif
 
     return ;
 }

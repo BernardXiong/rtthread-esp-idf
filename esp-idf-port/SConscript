@@ -13,7 +13,7 @@ for d in list:
 
 objs = objs + SConscript('SConscript_idf')
 objs = objs + SConscript('SConscript_libs')
-# objs = objs + SConscript('SConscript_lwip')
+objs = objs + SConscript('SConscript_lwip')
 objs = objs + SConscript('SConscript_mbedtls')
 
 Return('objs')

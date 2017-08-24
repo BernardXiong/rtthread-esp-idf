@@ -5,6 +5,11 @@ src = Glob('*.c')
 
 CPPPATH = [cwd]
 
+if GetDepend('IDF_LWIP'):
+    SrcRemove(src, ['socket_r.c'])
+else:
+    SrcRemove(src, ['lwip_cmd.c'])
+
 group = DefineGroup('ESP32', src, depend = [''], CPPPATH = CPPPATH)
 
 Return('group')

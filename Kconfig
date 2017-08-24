@@ -69,8 +69,5 @@ config RT_USING_WIFI
     bool "Support WiFi"
     default y
 
-config IDF_MBEDTLS
-    bool "Enable mbedtls in IDF"
-    default y
-
 source "$BSP_DIR/components/Kconfig"
+source "$BSP_DIR/esp-idf-port/Kconfig"
