@@ -108,6 +108,11 @@
    should be set high. */
 #define MEMP_NUM_PBUF               32 //16
 
+/* the number of network connection */
+#ifdef RT_LWIP_NETCONN_NUM
+#define MEMP_NUM_NETCONN			RT_LWIP_NETCONN_NUM
+#endif
+
 /* the number of UDP protocol control blocks. One per active RAW "connection". */
 #ifdef RT_LWIP_RAW_PCB_NUM
 #define MEMP_NUM_RAW_PCB            RT_LWIP_RAW_PCB_NUM
@@ -424,4 +429,7 @@
 #define SO_REUSE                        0
 #endif
 
+#define LWIP_RANDOMIZE_INITIAL_LOCAL_PORTS 1
+
 #endif /* __LWIPOPTS_H__ */
+

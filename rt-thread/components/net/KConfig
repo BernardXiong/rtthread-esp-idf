@@ -88,6 +88,10 @@ config RT_USING_LWIP
             int "the number of PBUF"
             default 16
 
+        config RT_LWIP_NETCONN_NUM
+            int "the number of network connection"
+            default 4
+
         config RT_LWIP_RAW_PCB_NUM
             int "the number of raw connection"
             default 4
