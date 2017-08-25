@@ -82,28 +82,28 @@ int audio_device_init(void)
 {
     uint8_t *mempool_ptr;
 
-	if (!_audio_device)
-	{
+    if (!_audio_device)
+    {
 #ifdef RT_USING_ESP_PSRAM
-	    _audio_device = (struct audio_device*) sdram_malloc (sizeof (struct audio_device) + AUDIO_DEVICE_DECODE_MP_SZ);
+        _audio_device = (struct audio_device*) sdram_malloc (sizeof (struct audio_device) + AUDIO_DEVICE_DECODE_MP_SZ);
 #else
-	    _audio_device = (struct audio_device*) malloc (sizeof (struct audio_device) + AUDIO_DEVICE_DECODE_MP_SZ);
+        _audio_device = (struct audio_device*) malloc (sizeof (struct audio_device) + AUDIO_DEVICE_DECODE_MP_SZ);
 #endif
-	    if (_audio_device == NULL) return -RT_ERROR;
+        if (_audio_device == NULL) return -RT_ERROR;
 
-	    _audio_device->evt_handler = NULL;
-	    _audio_device->parameter   = NULL;
+        _audio_device->evt_handler = NULL;
+        _audio_device->parameter   = NULL;
 
-	    mempool_ptr = (uint8_t *)(_audio_device + 1);
-	    rt_mp_init(&(_audio_device->mp), "adbuf", mempool_ptr, AUDIO_DEVICE_DECODE_MP_SZ, AUDIO_DEVICE_DECODE_MP_BLOCK_SZ * 2);
+        mempool_ptr = (uint8_t *)(_audio_device + 1);
+        rt_mp_init(&(_audio_device->mp), "adbuf", mempool_ptr, AUDIO_DEVICE_DECODE_MP_SZ, AUDIO_DEVICE_DECODE_MP_BLOCK_SZ * 2);
 
-	    /* find snd device */
-	    _audio_device->snd = rt_device_find("sound");
-	    if (_audio_device->snd == NULL) return -1;
+        /* find snd device */
+        _audio_device->snd = rt_device_find("sound");
+        if (_audio_device->snd == NULL) return -1;
 
-	    /* set tx complete call back function */
-	    rt_device_set_tx_complete(_audio_device->snd, audio_device_write_done);
-	}
+        /* set tx complete call back function */
+        rt_device_set_tx_complete(_audio_device->snd, audio_device_write_done);
+    }
 
     return RT_EOK;
 }
@@ -164,7 +164,7 @@ int audio_device_get_volume(void)
 
 void audio_device_wait_free(void)
 {
-	extern void wait_codec_free(void);
+    extern void wait_codec_free(void);
     wait_codec_free();
 }
 
@@ -176,7 +176,7 @@ void audio_device_open(void)
 
 void audio_device_close(void)
 {
-	rt_device_close(_audio_device->snd);
+    rt_device_close(_audio_device->snd);
 
     if (_audio_device->state == AUDIO_DEVICE_PLAYBACK)
     {
