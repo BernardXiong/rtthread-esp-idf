@@ -105,8 +105,10 @@ def CBProject(target, script, program):
 
         for macro in building.Env.get('CPPDEFINES', []):
             Add = SubElement(elem, 'Add')
-            Add.set('option', "-D"+macro)
-        
+            if type(macro)==str:
+                Add.set('option', "-D"+macro)
+            else:
+                Add.set('option', "-D"+macro[0])
         # write link flags
     '''
         # write lib dependence 

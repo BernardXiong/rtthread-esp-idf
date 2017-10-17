@@ -793,8 +793,10 @@ def walk_children(child):
 
     # print child
     full_path = child.rfile().abspath
-    file_type  = full_path.rsplit('.',1)[1]
-    #print file_type
+    splits = full_path.rsplit('.',1)
+    if len(splits) <= 1:
+        return
+    file_type  = splits[1]
     if file_type in source_ext:
         if full_path not in source_list:
             source_list.append(full_path)
