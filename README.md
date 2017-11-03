@@ -16,9 +16,7 @@ cd esp-idf-port/esp-idf
 git submodule init
 git submodule update
 
-git am ../0001-cpu_start-patch.patch
-git am ../0002-add-esp_task.h.patch
-git am ../0003-add-memset-to-0.patch
+git apply ../esp-idf-port.patch
 ```
 
 # 交叉编译工具链下载
@@ -58,7 +56,7 @@ git am ../0003-add-memset-to-0.patch
 # 编译
 
 1. 修改根目录下"rtconfig.py"文件内EXEC_PATH = r'D:\tools\msys32\opt\xtensa-esp32-elf\bin'为xtensa-esp32-elf交叉编译器所在目录；
-2. 在命令行下使用scons命令编译并生成bin文件；
+2. 在命令行下使用scons命令编译并生成bin文件或直接执行make all；
 
 # rt-iot audio开发板烧录
 

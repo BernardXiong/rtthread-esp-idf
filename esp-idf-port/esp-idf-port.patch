@@ -1,16 +1,5 @@
-From c80e2c01ca66b9deca7cdb014333e9e7d4a91cb5 Mon Sep 17 00:00:00 2001
-From: Bernard Xiong <bernard.xiong@gmail.com>
-Date: Fri, 4 Aug 2017 17:56:18 +0800
-Subject: [PATCH] Add memset to 0 when no audio data; remove pthread.h in idf
-
----
- components/driver/i2s.c             |   5 +-
- components/newlib/include/pthread.h | 431 ------------------------------------
- 2 files changed, 4 insertions(+), 432 deletions(-)
- delete mode 100644 components/newlib/include/pthread.h
-
 diff --git a/components/driver/i2s.c b/components/driver/i2s.c
-index ac0c3fb0..f1061a7e 100644
+index ac0c3fb..3bd48ef 100644
 --- a/components/driver/i2s.c
 +++ b/components/driver/i2s.c
 @@ -360,8 +360,11 @@ static void IRAM_ATTR i2s_intr_handler_default(void *arg)
@@ -22,13 +11,50 @@ index ac0c3fb0..f1061a7e 100644
 +            xQueueReceiveFromISR(p_i2s->tx->queue, &ptr, &high_priority_task_awoken);
 +			memset(ptr, 0x0, p_i2s->tx->buf_size);
          }
-+		
++
          xQueueSendFromISR(p_i2s->tx->queue, (void*)(&finish_desc->buf), &high_priority_task_awoken);
          if (p_i2s->i2s_queue) {
              i2s_event.type = I2S_EVENT_TX_DONE;
+diff --git a/components/esp32/cpu_start.c b/components/esp32/cpu_start.c
+index 858036c..0fc0ef7 100644
+--- a/components/esp32/cpu_start.c
++++ b/components/esp32/cpu_start.c
+@@ -43,6 +43,7 @@
+ #include "esp_heap_alloc_caps.h"
+ #include "sdkconfig.h"
+ #include "esp_system.h"
++#include "esp_task.h"
+ #include "esp_spi_flash.h"
+ #include "nvs_flash.h"
+ #include "esp_event.h"
+@@ -242,16 +243,17 @@ void start_cpu0_default(void)
+     esp_setup_time_syscalls();
+     esp_vfs_dev_uart_register();
+     esp_reent_init(_GLOBAL_REENT);
+-#ifndef CONFIG_CONSOLE_UART_NONE
+-    const char* default_uart_dev = "/dev/uart/" STRINGIFY(CONFIG_CONSOLE_UART_NUM);
+-    _GLOBAL_REENT->_stdin  = fopen(default_uart_dev, "r");
+-    _GLOBAL_REENT->_stdout = fopen(default_uart_dev, "w");
+-    _GLOBAL_REENT->_stderr = fopen(default_uart_dev, "w");
+-#else
++
+     _GLOBAL_REENT->_stdin  = (FILE*) &__sf_fake_stdin;
+     _GLOBAL_REENT->_stdout = (FILE*) &__sf_fake_stdout;
+     _GLOBAL_REENT->_stderr = (FILE*) &__sf_fake_stderr;
+-#endif
++
++    extern void rtthread_startup(void);
++    extern int rtthread_stdio_init(void);
++
++    rtthread_startup();
++    rtthread_stdio_init();
++
+ #if CONFIG_ESP32_APPTRACE_ENABLE
+     esp_err_t err = esp_apptrace_init();
+     if (err != ESP_OK) {
 diff --git a/components/newlib/include/pthread.h b/components/newlib/include/pthread.h
 deleted file mode 100644
-index db1f9c1c..00000000
+index db1f9c1..0000000
 --- a/components/newlib/include/pthread.h
 +++ /dev/null
 @@ -1,431 +0,0 @@
@@ -463,6 +489,3 @@ index db1f9c1c..00000000
 -
 -#endif
 -/* end of include file */
--- 
-2.11.0.windows.3
-
