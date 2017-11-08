@@ -21,6 +21,8 @@ git apply ../esp-idf-port.patch
 
 # 交叉编译工具链下载
 
+注：交叉工具链目前验证过的是1.22.0-61版本，工具链版本太高，或太低都不行。
+
 * Linux版本：
 
 - CentOS 7::
@@ -40,11 +42,11 @@ git apply ../esp-idf-port.patch
 
 * MacOS版本
 
-[MacOS](https://dl.espressif.com/dl/xtensa-esp32-elf-osx-1.22.0-59.tar.gz)
+[MacOS](https://dl.espressif.com/dl/xtensa-esp32-elf-osx-1.22.0-61-gab8375a-5.2.0.tar.gz)
 
 * Windows版本
 
-[Windows](https://dl.espressif.com/dl/xtensa-esp32-elf-win32-1.22.0-59.zip)
+[Windows](https://dl.espressif.com/dl/xtensa-esp32-elf-win32-1.22.0-61-gab8375a-5.2.0.zip)
 
 ## 依赖软件
 1. scons
