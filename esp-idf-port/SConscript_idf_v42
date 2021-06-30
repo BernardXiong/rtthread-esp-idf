@@ -1,0 +1,347 @@
+from building import *
+
+# esp-idf/components/freertos/timers.c
+# esp-idf/components/newlib/syscalls.c
+# esp-idf/components/newlib/syscall_table.c
+# esp-idf/components/freertos/event_groups.c
+# esp-idf/components/freertos/queue.c
+
+cwd = GetCurrentDir()
+src = Split('''
+esp-idf/components/app_update/esp_app_desc.c
+esp-idf/components/app_update/esp_ota_ops.c
+esp-idf/components/bootloader_support/src/bootloader_clock.c
+esp-idf/components/bootloader_support/src/bootloader_common.c
+esp-idf/components/bootloader_support/src/bootloader_flash.c
+esp-idf/components/bootloader_support/src/bootloader_flash_config_esp32.c
+esp-idf/components/bootloader_support/src/bootloader_mem.c
+esp-idf/components/bootloader_support/src/bootloader_random.c
+esp-idf/components/bootloader_support/src/bootloader_utility.c
+esp-idf/components/bootloader_support/src/esp_image_format.c
+esp-idf/components/bootloader_support/src/flash_encrypt.c
+esp-idf/components/bootloader_support/src/bootloader_efuse_esp32.c
+esp-idf/components/bootloader_support/src/bootloader_init.c
+esp-idf/components/bootloader_support/src/bootloader_random_esp32.c
+esp-idf/components/bootloader_support/src/flash_encrypt.c
+esp-idf/components/bootloader_support/src/flash_partitions.c
+esp-idf/components/bootloader_support/src/flash_qio_mode.c
+esp-idf/components/driver/adc_common.c
+esp-idf/components/driver/dac_common.c
+esp-idf/components/driver/esp32/adc.c
+esp-idf/components/driver/esp32/dac.c
+esp-idf/components/driver/esp32/touch_sensor.c
+esp-idf/components/driver/gpio.c
+esp-idf/components/driver/i2c.c
+esp-idf/components/driver/i2s.c
+esp-idf/components/driver/ledc.c
+esp-idf/components/driver/mcpwm.c
+esp-idf/components/driver/pcnt.c
+esp-idf/components/driver/periph_ctrl.c
+esp-idf/components/driver/rmt.c
+esp-idf/components/driver/rtc_io.c
+esp-idf/components/driver/rtc_module.c
+esp-idf/components/driver/sdio_slave.c
+esp-idf/components/driver/sdmmc_host.c
+esp-idf/components/driver/sdmmc_transaction.c
+esp-idf/components/driver/sdspi_crc.c
+esp-idf/components/driver/sdspi_host.c
+esp-idf/components/driver/sdspi_transaction.c
+esp-idf/components/driver/sigmadelta.c
+esp-idf/components/driver/spi_bus_lock.c
+esp-idf/components/driver/spi_common.c
+esp-idf/components/driver/spi_master.c
+esp-idf/components/driver/spi_slave.c
+esp-idf/components/driver/timer.c
+esp-idf/components/driver/touch_sensor_common.c
+esp-idf/components/driver/twai.c
+esp-idf/components/driver/uart.c
+esp-idf/components/efuse/esp32/esp_efuse_table.c
+esp-idf/components/efuse/src/esp32/esp_efuse_api.c
+esp-idf/components/efuse/src/esp32/esp_efuse_fields.c
+esp-idf/components/efuse/src/esp32/esp_efuse_utility.c
+esp-idf/components/efuse/src/esp_efuse_api.c
+esp-idf/components/efuse/src/esp_efuse_fields.c
+esp-idf/components/efuse/src/esp_efuse_utility.c
+esp-idf/components/esp32/cache_err_int.c
+esp-idf/components/esp32/cache_sram_mmu.c
+esp-idf/components/esp32/clk.c
+esp-idf/components/esp32/cpu_start.c
+esp-idf/components/esp32/crosscore_int.c
+esp-idf/components/esp32/dport_access.c
+esp-idf/components/esp32/esp_himem.c
+esp-idf/components/esp32/hw_random.c
+esp-idf/components/esp32/intr_alloc.c
+esp-idf/components/esp32/pm_esp32.c
+esp-idf/components/esp32/pm_trace.c
+esp-idf/components/esp32/sleep_modes.c
+esp-idf/components/esp32/spiram.c
+esp-idf/components/esp32/spiram_psram.c
+esp-idf/components/esp32/system_api_esp32.c
+esp-idf/components/espcoredump/src/core_dump_common.c
+esp-idf/components/espcoredump/src/core_dump_elf.c
+esp-idf/components/espcoredump/src/core_dump_flash.c
+esp-idf/components/espcoredump/src/core_dump_port.c
+esp-idf/components/espcoredump/src/core_dump_uart.c
+esp-idf/components/esp_adc_cal/esp_adc_cal_esp32.c
+esp-idf/components/esp_common/src/brownout.c
+esp-idf/components/esp_common/src/dbg_stubs.c
+esp-idf/components/esp_common/src/esp_err.c
+esp-idf/components/esp_common/src/esp_err_to_name.c
+esp-idf/components/esp_common/src/freertos_hooks.c
+esp-idf/components/esp_common/src/int_wdt.c
+esp-idf/components/esp_common/src/mac_addr.c
+esp-idf/components/esp_common/src/pm_locks.c
+esp-idf/components/esp_common/src/stack_check.c
+esp-idf/components/esp_common/src/task_wdt.c
+esp-idf/components/esp_event/default_event_loop.c
+esp-idf/components/esp_event/esp_event.c
+esp-idf/components/esp_event/esp_event_private.c
+esp-idf/components/esp_event/event_loop_legacy.c
+esp-idf/components/esp_event/event_send.c
+esp-idf/components/esp_hid/src/esp_hidd.c
+esp-idf/components/esp_hid/src/esp_hidh.c
+esp-idf/components/esp_hid/src/esp_hid_common.c
+esp-idf/components/esp_ipc/ipc.c
+esp-idf/components/esp_local_ctrl/proto-c/esp_local_ctrl.pb-c.c
+esp-idf/components/esp_local_ctrl/src/esp_local_ctrl.c
+esp-idf/components/esp_local_ctrl/src/esp_local_ctrl_handler.c
+esp-idf/components/esp_ringbuf/ringbuf.c
+esp-idf/components/esp_serial_slave_link/essl.c
+esp-idf/components/esp_serial_slave_link/essl_sdio.c
+esp-idf/components/esp_system/panic.c
+esp-idf/components/esp_system/port/esp32/reset_reason.c
+esp-idf/components/esp_system/port/panic_handler.c
+esp-idf/components/esp_system/system_api.c
+esp-idf/components/esp_timer/src/esp_timer.c
+esp-idf/components/esp_timer/src/esp_timer_impl_lac.c
+esp-idf/components/esp_timer/src/ets_timer_legacy.c
+esp-idf/components/freertos/croutine.c
+esp-idf/components/freertos/FreeRTOS-openocd.c
+esp-idf/components/freertos/list.c
+esp-idf/components/freertos/xtensa/port.c
+esp-idf/components/freertos/xtensa/xtensa_init.c
+esp-idf/components/freertos/xtensa/xtensa_intr.c
+esp-idf/components/freertos/xtensa/xtensa_overlay_os_hook.c
+esp-idf/components/heap/heap_caps.c
+esp-idf/components/heap/heap_caps_init.c
+esp-idf/components/heap/multi_heap.c
+esp-idf/components/log/log.c
+esp-idf/components/log/log_buffers.c
+esp-idf/components/log/log_freertos.c
+esp-idf/components/newlib/abort.c
+esp-idf/components/newlib/heap.c
+esp-idf/components/newlib/locks.c
+esp-idf/components/newlib/poll.c
+esp-idf/components/newlib/pthread.c
+esp-idf/components/newlib/random.c
+esp-idf/components/newlib/reent_init.c
+esp-idf/components/newlib/termios.c
+esp-idf/components/newlib/time.c
+esp-idf/components/perfmon/xtensa_perfmon_access.c
+esp-idf/components/perfmon/xtensa_perfmon_apis.c
+esp-idf/components/perfmon/xtensa_perfmon_masks.c
+esp-idf/components/pthread/pthread.c
+esp-idf/components/pthread/pthread_cond_var.c
+esp-idf/components/pthread/pthread_local_storage.c
+esp-idf/components/sdmmc/sdmmc_cmd.c
+esp-idf/components/sdmmc/sdmmc_common.c
+esp-idf/components/sdmmc/sdmmc_init.c
+esp-idf/components/sdmmc/sdmmc_io.c
+esp-idf/components/sdmmc/sdmmc_mmc.c
+esp-idf/components/sdmmc/sdmmc_sd.c
+esp-idf/components/soc/src/compare_set.c
+esp-idf/components/soc/src/cpu_util.c
+esp-idf/components/soc/src/esp32/adc_hal.c
+esp-idf/components/soc/src/esp32/brownout_hal.c
+esp-idf/components/soc/src/esp32/emac_hal.c
+esp-idf/components/soc/src/esp32/rtc_clk.c
+esp-idf/components/soc/src/esp32/rtc_clk_init.c
+esp-idf/components/soc/src/esp32/rtc_init.c
+esp-idf/components/soc/src/esp32/rtc_pm.c
+esp-idf/components/soc/src/esp32/rtc_sleep.c
+esp-idf/components/soc/src/esp32/rtc_time.c
+esp-idf/components/soc/src/esp32/rtc_wdt.c
+esp-idf/components/soc/src/esp32/soc_memory_layout.c
+esp-idf/components/soc/src/esp32/touch_sensor_hal.c
+esp-idf/components/soc/src/hal/adc_hal.c
+esp-idf/components/soc/src/hal/cpu_hal.c
+esp-idf/components/soc/src/hal/dac_hal.c
+esp-idf/components/soc/src/hal/gpio_hal.c
+esp-idf/components/soc/src/hal/i2c_hal.c
+esp-idf/components/soc/src/hal/i2c_hal_iram.c
+esp-idf/components/soc/src/hal/i2s_hal.c
+esp-idf/components/soc/src/hal/ledc_hal.c
+esp-idf/components/soc/src/hal/ledc_hal_iram.c
+esp-idf/components/soc/src/hal/mcpwm_hal.c
+esp-idf/components/soc/src/hal/mpu_hal.c
+esp-idf/components/soc/src/hal/pcnt_hal.c
+esp-idf/components/soc/src/hal/rmt_hal.c
+esp-idf/components/soc/src/hal/rtc_io_hal.c
+esp-idf/components/soc/src/hal/sdio_slave_hal.c
+esp-idf/components/soc/src/hal/sigmadelta_hal.c
+esp-idf/components/soc/src/hal/soc_hal.c
+esp-idf/components/soc/src/hal/spi_flash_hal.c
+esp-idf/components/soc/src/hal/spi_flash_hal_iram.c
+esp-idf/components/soc/src/hal/spi_hal.c
+esp-idf/components/soc/src/hal/spi_hal_iram.c
+esp-idf/components/soc/src/hal/spi_slave_hal.c
+esp-idf/components/soc/src/hal/spi_slave_hal_iram.c
+esp-idf/components/soc/src/hal/timer_hal.c
+esp-idf/components/soc/src/hal/touch_sensor_hal.c
+esp-idf/components/soc/src/hal/twai_hal.c
+esp-idf/components/soc/src/hal/uart_hal.c
+esp-idf/components/soc/src/hal/uart_hal_iram.c
+esp-idf/components/soc/src/hal/wdt_hal_iram.c
+esp-idf/components/soc/src/lldesc.c
+esp-idf/components/soc/src/memory_layout_utils.c
+esp-idf/components/soc/src/soc_include_legacy_warn.c
+esp-idf/components/soc/soc/esp32/adc_periph.c
+esp-idf/components/soc/soc/esp32/dac_periph.c
+esp-idf/components/soc/soc/esp32/gpio_periph.c
+esp-idf/components/soc/soc/esp32/i2c_periph.c
+esp-idf/components/soc/soc/esp32/i2s_periph.c
+esp-idf/components/soc/soc/esp32/interrupts.c
+esp-idf/components/soc/soc/esp32/ledc_periph.c
+esp-idf/components/soc/soc/esp32/rtc_io_periph.c
+esp-idf/components/soc/soc/esp32/rtc_periph.c
+esp-idf/components/soc/soc/esp32/sdio_slave_periph.c
+esp-idf/components/soc/soc/esp32/sdmmc_periph.c
+esp-idf/components/soc/soc/esp32/spi_periph.c
+esp-idf/components/soc/soc/esp32/touch_sensor_periph.c
+esp-idf/components/soc/soc/esp32/uart_periph.c
+esp-idf/components/spi_flash/cache_utils.c
+esp-idf/components/spi_flash/esp32/flash_ops_esp32.c
+esp-idf/components/spi_flash/esp32/spi_flash_rom_patch.c
+esp-idf/components/spi_flash/esp_flash_api.c
+esp-idf/components/spi_flash/esp_flash_spi_init.c
+esp-idf/components/spi_flash/flash_mmap.c
+esp-idf/components/spi_flash/flash_ops.c
+esp-idf/components/spi_flash/memspi_host_driver.c
+esp-idf/components/spi_flash/partition.c
+esp-idf/components/spi_flash/spi_flash_chip_drivers.c
+esp-idf/components/spi_flash/spi_flash_chip_gd.c
+esp-idf/components/spi_flash/spi_flash_chip_generic.c
+esp-idf/components/spi_flash/spi_flash_chip_issi.c
+esp-idf/components/spi_flash/spi_flash_chip_mxic.c
+esp-idf/components/spi_flash/spi_flash_os_func_app.c
+esp-idf/components/spi_flash/spi_flash_os_func_noos.c
+esp-idf/components/ulp/ulp.c
+esp-idf/components/ulp/ulp_macro.c
+esp-idf/components/xtensa/debug_helpers.c
+esp-idf/components/xtensa/eri.c
+esp-idf/components/xtensa/esp32/trax_init.c
+esp-idf/components/xtensa/expression_with_stack_xtensa.c
+esp-idf/components/xtensa/trax.c
+''')
+
+cpp_src = Split('''
+esp-idf/components/cxx/cxx_exception_stubs.cpp
+esp-idf/components/cxx/cxx_guards.cpp
+esp-idf/components/nvs_flash/src/nvs_api.cpp
+esp-idf/components/nvs_flash/src/nvs_cxx_api.cpp
+esp-idf/components/nvs_flash/src/nvs_handle_locked.cpp
+esp-idf/components/nvs_flash/src/nvs_handle_simple.cpp
+esp-idf/components/nvs_flash/src/nvs_item_hash_list.cpp
+esp-idf/components/nvs_flash/src/nvs_ops.cpp
+esp-idf/components/nvs_flash/src/nvs_page.cpp
+esp-idf/components/nvs_flash/src/nvs_pagemanager.cpp
+esp-idf/components/nvs_flash/src/nvs_partition_manager.cpp
+esp-idf/components/nvs_flash/src/nvs_storage.cpp
+esp-idf/components/nvs_flash/src/nvs_types.cpp
+esp-idf/components/wear_levelling/crc32.cpp
+esp-idf/components/wear_levelling/Partition.cpp
+esp-idf/components/wear_levelling/SPI_Flash.cpp
+esp-idf/components/wear_levelling/wear_levelling.cpp
+esp-idf/components/wear_levelling/WL_Ext_Perf.cpp
+esp-idf/components/wear_levelling/WL_Ext_Safe.cpp
+esp-idf/components/wear_levelling/WL_Flash.cpp
+''')
+
+asm_src = Split('''
+esp-idf/components/esp_system/port/esp32/dport_panic_highint_hdl.S
+esp-idf/components/esp_system/port/panic_handler_asm.S
+esp-idf/components/freertos/xtensa/portasm.S
+esp-idf/components/freertos/xtensa/xtensa_context.S
+esp-idf/components/freertos/xtensa/xtensa_intr_asm.S
+esp-idf/components/freertos/xtensa/xtensa_vectors.S
+esp-idf/components/freertos/xtensa/xtensa_vector_defaults.S
+esp-idf/components/xtensa/debug_helpers_asm.S
+esp-idf/components/xtensa/expression_with_stack_xtensa_asm.S
+''')
+
+CPPPATH = [
+cwd + '/esp-idf/components/app_trace/include',
+cwd + '/esp-idf/components/app_update/include',
+cwd + '/esp-idf/components/bootloader_support/include',
+cwd + '/esp-idf/components/bootloader_support/include_bootloader',
+cwd + '/esp-idf/components/driver/esp32/include',
+cwd + '/esp-idf/components/efuse/esp32/include',
+cwd + '/esp-idf/components/efuse/include',
+cwd + '/esp-idf/components/efuse/private_include',
+cwd + '/esp-idf/components/esp_adc_cal/include',
+cwd + '/esp-idf/components/esp_common/include',
+cwd + '/esp-idf/components/esp_eth/include',
+cwd + '/esp-idf/components/esp_event/include',
+cwd + '/esp-idf/components/esp_event/private_include',
+cwd + '/esp-idf/components/esp_gdbstub/esp32',
+cwd + '/esp-idf/components/esp_gdbstub/include',
+cwd + '/esp-idf/components/esp_gdbstub/private_include',
+cwd + '/esp-idf/components/esp_gdbstub/xtensa',
+cwd + '/esp-idf/components/esp_hid/include',
+cwd + '/esp-idf/components/esp_hid/private',
+cwd + '/esp-idf/components/esp_ipc/include',
+cwd + '/esp-idf/components/esp_local_ctrl/include',
+cwd + '/esp-idf/components/esp_local_ctrl/proto-c',
+cwd + '/esp-idf/components/esp_ringbuf/include',
+cwd + '/esp-idf/components/esp_rom/include',
+cwd + '/esp-idf/components/esp_system/include',
+cwd + '/esp-idf/components/esp_timer/include',
+cwd + '/esp-idf/components/espcoredump/include',
+cwd + '/esp-idf/components/espcoredump/include_core_dump',
+cwd + '/esp-idf/components/freertos/include',
+cwd + '/esp-idf/components/freertos/xtensa/include',
+cwd + '/esp-idf/components/freertos/xtensa/include/freertos',
+cwd + '/esp-idf/components/heap/include',
+cwd + '/esp-idf/components/protobuf-c/protobuf-c',
+cwd + '/esp-idf/components/protocomm/include/common',
+cwd + '/esp-idf/components/protocomm/include/security',
+cwd + '/esp-idf/components/protocomm/proto-c',
+cwd + '/esp-idf/components/soc/include',
+cwd + '/esp-idf/components/soc/soc/esp32/include',
+cwd + '/esp-idf/components/soc/soc/include',
+cwd + '/esp-idf/components/soc/src/esp32/include',
+cwd + '/esp-idf/components/wear_levelling/include',
+cwd + '/esp-idf/components/wear_levelling/private_include',
+cwd + '/esp-idf/components/xtensa/esp32/include',
+cwd + '/esp-idf/components/xtensa/include',
+cwd + '/esp-idf/components/driver/include',
+cwd + '/esp-idf/components/esp32/include',
+cwd + '/esp-idf/components/esp_wifi/include',
+cwd + '/esp-idf/components/esp_netif/include',
+cwd + '/esp-idf/components/esp_serial_slave_link/include',
+cwd + '/esp-idf/components/esp_serial_slave_link/include/esp_serial_slave_link',
+cwd + '/esp-idf/components/esp_system/private_include',
+cwd + '/esp-idf/components/esp_system/port/include',
+cwd + '/esp-idf/components/nvs_flash/include',
+cwd + '/esp-idf/components/spi_flash/include',
+cwd + '/esp-idf/components/tcpip_adapter/include',
+cwd + '/esp-idf/components/newlib/platform_include',
+cwd + '/esp-idf/components/log/include',
+cwd + '/esp-idf/components/sdmmc/include',
+cwd + '/esp-idf/components/driver/include/driver',
+cwd + '/esp-idf/components/esp_timer/private_include',
+cwd + '/esp-idf/components/freertos/include/freertos',
+cwd + '/esp-idf/components/perfmon/include',
+cwd + '/esp-idf/components/pthread/include',
+cwd + '/esp-idf/components/soc/soc/esp32/private_include',
+cwd + '/esp-idf/components/spi_flash/private_include',
+cwd + '/esp-idf/components/ulp/include',
+cwd + '/esp-idf/components/wpa_supplicant/port/include',
+cwd + '/esp-idf/components/wpa_supplicant/src',
+cwd + '/esp-idf/components/wpa_supplicant/include',
+]
+CPPDEFINES = ['WITH_POSIX', 'ESP_PLATFORM', 'IDF_VER=\\"v4.2\\"', '_GNU_SOURCE', 'RT_USING_NEWLIB', 'PROJECT_VER=\\"v4.2\\"', 'PROJECT_NAME=\\"project\\"']
+
+group = DefineGroup('esp-idf', src + cpp_src + asm_src, depend = [''], CPPPATH = CPPPATH, CPPDEFINES = CPPDEFINES)
+
+Return('group')

@@ -25,15 +25,36 @@ env = Environment(tools = ['mingw'],
     LINK = rtconfig.LINK, LINKFLAGS = rtconfig.LFLAGS)
 env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
 env.Append(BUILDERS = {'ConvertELF': cvt})
+env['ASCOM'] = env['ASPPCOM']
 
 Export('RTT_ROOT')
 Export('rtconfig')
 
-env['LINKCOM']=env['LINKCOM'].replace("$_LIBFLAGS","-Wl,--start-group $_LIBFLAGS -Wl,-end-group")
+# env['LINKCOM']=env['LINKCOM'].replace("$_LIBFLAGS","-Wl,--start-group $_LIBFLAGS -Wl,-end-group")
+# print(env['LINKCOM'])
 
 # prepare building environment
 objs = PrepareBuilding(env, RTT_ROOT, has_libcpu=True)
 
 # make a building
 program = DoBuilding(TARGET, objs)
+
+obj_files = []
+for item in program:
+    for child in item.all_children():
+        if child.has_builder():
+            file_ln = str(child)
+            file_ln = file_ln.replace('\\', '/')
+            # print(file_ln)
+
+            obj_files.append(file_ln)
+obj_files.sort()
+
+link_file = open('link.txt', 'w')
+for item in obj_files:
+    link_file.write(item + '\n')
+link_file.close()
+
+env['LINKCOM']= '$LINK -o $TARGET esp-idf-port/windowspill_asm.o esp-idf-port/save_extra_nw.o esp-idf-port/restore_extra_nw.o $LINKFLAGS $__RPATH $_LIBDIRFLAGS $_LIBFLAGS @link.txt'
+
 binfile = env.ConvertELF('rtthread.bin', TARGET)

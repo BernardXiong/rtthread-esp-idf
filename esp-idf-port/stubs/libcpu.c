@@ -662,3 +662,27 @@ EventBits_t xEventGroupWaitBits( EventGroupHandle_t xEventGroup, const EventBits
     return (err!=RT_EOK)?0:recved;
 }
 
+UBaseType_t uxTaskPriorityGet( TaskHandle_t xTask )
+{
+    return 20;
+}
+
+void vTaskPrioritySet( TaskHandle_t xTask, UBaseType_t uxNewPriority )
+{
+    return ;
+}
+
+TaskHandle_t xTaskGetIdleTaskHandleForCPU( UBaseType_t cpuid )
+{
+    return NULL;
+}
+
+QueueHandle_t xQueueCreateCountingSemaphore( const UBaseType_t uxMaxCount, const UBaseType_t uxInitialCount )
+{
+    return NULL;
+}
+
+TickType_t xTaskGetTickCountFromISR( void )
+{
+    return rt_tick_get();
+}

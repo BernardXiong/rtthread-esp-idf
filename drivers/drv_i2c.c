@@ -87,7 +87,7 @@ int rt_hw_drv_i2c_init(void)
 
     gpio_config_t io_conf;
 
-    io_conf.intr_type = GPIO_PIN_INTR_DISABLE;
+    io_conf.intr_type = GPIO_INTR_DISABLE;
     io_conf.mode = GPIO_MODE_INPUT_OUTPUT_OD;
     io_conf.pin_bit_mask = (1<<I2C_SDA_IO) | (1 << I2C_SCL_IO);
     io_conf.pull_down_en = 0;

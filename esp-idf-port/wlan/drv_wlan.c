@@ -14,7 +14,7 @@
 #include <lwipopts.h>
 #include <esp_interface.h>
 #include <esp_wifi.h>
-#include <esp_wifi_internal.h>
+// #include <esp_wifi_internal.h>
 
 #define MAX_ADDR_LEN                6
 #define ESP32_WLAN_DEVICE(eth)      (struct esp32_wlan*)(eth)

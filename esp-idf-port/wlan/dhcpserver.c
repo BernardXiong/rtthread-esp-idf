@@ -22,7 +22,7 @@
 #include "lwip/ip_addr.h"
 #include "tcpip_adapter.h"
 
-#include "apps/dhcpserver.h"
+#include "dhcpserver/dhcpserver.h"
 
 #if ESP_DHCP
 

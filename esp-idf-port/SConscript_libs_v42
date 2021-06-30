@@ -1,0 +1,10 @@
+from building import *
+
+cwd     = GetCurrentDir()
+src     = []
+LIBS    = ['c', 'm', 'coexist', 'core', 'net80211', 'phy', 'pp', 'rtc', 'smartconfig', 'hal', 'gcc']
+LIBPATH = [cwd + '/esp-idf-v4.2/components/esp_wifi/lib/esp32', cwd + '/esp-idf-v4.2/components/xtensa/esp32']
+
+group = DefineGroup('esp-libs', src, depend = [''], LIBS = LIBS, LIBPATH = LIBPATH)
+
+Return('group')

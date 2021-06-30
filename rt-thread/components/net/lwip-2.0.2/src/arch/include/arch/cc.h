@@ -55,7 +55,7 @@
 /* WARNING: ESHUTDOWN also not defined in newlib. We chose
 			180 here because the number "108" which is used
 			in arch.h has been assigned to another error code. */
-#define ESHUTDOWN 180
+// #define ESHUTDOWN 180
 #endif /* __CC_ARM/__IAR_SYSTEMS_ICC__ */
 #else
 #define LWIP_PROVIDE_ERRNO

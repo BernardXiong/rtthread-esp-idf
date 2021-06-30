@@ -1,0 +1,101 @@
+from building import *
+
+cwd = GetCurrentDir()
+src = Split('''
+esp-idf/components/wpa_supplicant/port/os_xtensa.c
+esp-idf/components/wpa_supplicant/src/ap/ap_config.c
+esp-idf/components/wpa_supplicant/src/ap/ieee802_1x.c
+esp-idf/components/wpa_supplicant/src/ap/wpa_auth.c
+esp-idf/components/wpa_supplicant/src/ap/wpa_auth_ie.c
+esp-idf/components/wpa_supplicant/src/common/dpp.c
+esp-idf/components/wpa_supplicant/src/common/sae.c
+esp-idf/components/wpa_supplicant/src/common/wpa_common.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-cbc.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-ccm.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-ctr.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-internal-dec.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-internal-enc.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-omac1.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-siv.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-unwrap.c
+esp-idf/components/wpa_supplicant/src/crypto/aes-wrap.c
+esp-idf/components/wpa_supplicant/src/crypto/bignum.c
+esp-idf/components/wpa_supplicant/src/crypto/ccmp.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_internal-cipher.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_internal-modexp.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_internal-rsa.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_internal.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_mbedtls-bignum.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_mbedtls-ec.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_mbedtls.c
+esp-idf/components/wpa_supplicant/src/crypto/crypto_ops.c
+esp-idf/components/wpa_supplicant/src/crypto/des-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/dh_group5.c
+esp-idf/components/wpa_supplicant/src/crypto/dh_groups.c
+esp-idf/components/wpa_supplicant/src/crypto/md4-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/md5-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/md5.c
+esp-idf/components/wpa_supplicant/src/crypto/ms_funcs.c
+esp-idf/components/wpa_supplicant/src/crypto/rc4.c
+esp-idf/components/wpa_supplicant/src/crypto/sha1-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/sha1-pbkdf2.c
+esp-idf/components/wpa_supplicant/src/crypto/sha1-tlsprf.c
+esp-idf/components/wpa_supplicant/src/crypto/sha1.c
+esp-idf/components/wpa_supplicant/src/crypto/sha256-internal.c
+esp-idf/components/wpa_supplicant/src/crypto/sha256-kdf.c
+esp-idf/components/wpa_supplicant/src/crypto/sha256-prf.c
+esp-idf/components/wpa_supplicant/src/crypto/sha256-tlsprf.c
+esp-idf/components/wpa_supplicant/src/crypto/sha256.c
+esp-idf/components/wpa_supplicant/src/crypto/sha384-tlsprf.c
+esp-idf/components/wpa_supplicant/src/crypto/tls_mbedtls.c
+esp-idf/components/wpa_supplicant/src/eap_peer/chap.c
+esp-idf/components/wpa_supplicant/src/eap_peer/eap.c
+esp-idf/components/wpa_supplicant/src/eap_peer/eap_common.c
+esp-idf/components/wpa_supplicant/src/eap_peer/eap_mschapv2.c
+esp-idf/components/wpa_supplicant/src/eap_peer/eap_peap.c
+esp-idf/components/wpa_supplicant/src/eap_peer/eap_peap_common.c
+esp-idf/components/wpa_supplicant/src/eap_peer/eap_tls.c
+esp-idf/components/wpa_supplicant/src/eap_peer/eap_tls_common.c
+esp-idf/components/wpa_supplicant/src/eap_peer/eap_ttls.c
+esp-idf/components/wpa_supplicant/src/eap_peer/mschapv2.c
+esp-idf/components/wpa_supplicant/src/esp_supplicant/esp_hostap.c
+esp-idf/components/wpa_supplicant/src/esp_supplicant/esp_wpa2.c
+esp-idf/components/wpa_supplicant/src/esp_supplicant/esp_wpa3.c
+esp-idf/components/wpa_supplicant/src/esp_supplicant/esp_wpas_glue.c
+esp-idf/components/wpa_supplicant/src/esp_supplicant/esp_wpa_main.c
+esp-idf/components/wpa_supplicant/src/esp_supplicant/esp_wps.c
+esp-idf/components/wpa_supplicant/src/rsn_supp/pmksa_cache.c
+esp-idf/components/wpa_supplicant/src/rsn_supp/wpa.c
+esp-idf/components/wpa_supplicant/src/rsn_supp/wpa_ie.c
+esp-idf/components/wpa_supplicant/src/utils/base64.c
+esp-idf/components/wpa_supplicant/src/utils/common.c
+esp-idf/components/wpa_supplicant/src/utils/ext_password.c
+esp-idf/components/wpa_supplicant/src/utils/json.c
+esp-idf/components/wpa_supplicant/src/utils/uuid.c
+esp-idf/components/wpa_supplicant/src/utils/wpabuf.c
+esp-idf/components/wpa_supplicant/src/utils/wpa_debug.c
+esp-idf/components/wpa_supplicant/src/wps/wps.c
+esp-idf/components/wpa_supplicant/src/wps/wps_attr_build.c
+esp-idf/components/wpa_supplicant/src/wps/wps_attr_parse.c
+esp-idf/components/wpa_supplicant/src/wps/wps_attr_process.c
+esp-idf/components/wpa_supplicant/src/wps/wps_common.c
+esp-idf/components/wpa_supplicant/src/wps/wps_dev_attr.c
+esp-idf/components/wpa_supplicant/src/wps/wps_enrollee.c
+esp-idf/components/wpa_supplicant/src/wps/wps_registrar.c
+esp-idf/components/wpa_supplicant/src/wps/wps_validate.c
+''')
+
+CPPPATH = [
+cwd + '/esp-idf/components/mbedtls/mbedtls/include',
+cwd + '/esp-idf/components/mbedtls/port/include',
+cwd + '/esp-idf/components/wpa_supplicant/port/include',
+cwd + '/esp-idf/components/wpa_supplicant/src',
+cwd + '/esp-idf/components/wpa_supplicant/include',
+cwd + '/esp-idf/components/wpa_supplicant/include/esp_supplicant',
+]
+CPPDEFINES = ["CONFIG_DPP", "CONFIG_ECC", "CONFIG_IEEE80211W", "CONFIG_SHA256", "CONFIG_WPA3_SAE", "CONFIG_WPS2", "CONFIG_WPS_PIN", "EAP_MSCHAPv2", "EAP_PEAP", "EAP_PEER_METHOD", "EAP_TLS", "EAP_TTLS", "ESP32_WORKAROUND", "ESPRESSIF_USE", "ESP_SUPPLICANT", "IEEE8021X_EAPOL", "USE_WPA2_TASK", "USE_WPS_TASK", "__ets__"]
+
+group = DefineGroup('wpa_supplicant', src, depend = [''], CPPPATH = CPPPATH, LOCAL_CPPDEFINES = CPPDEFINES)
+
+Return('group')

@@ -472,3 +472,18 @@ void abort(void)
     while (1);
 }
 #endif
+
+int _getpid_r(struct _reent *r)
+{
+    return 0;
+}
+
+int _kill_r(struct _reent *r, int pid, int sig)
+{
+    return 0;
+}
+
+void *_sbrk_r(struct _reent *r, ptrdiff_t sz)
+{
+    return NULL;
+}

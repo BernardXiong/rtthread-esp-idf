@@ -2,7 +2,7 @@
 #define THREAD_ESP_H__
 
 #include <rtthread.h>
-#include <FreeRTOS.h>
+#include <freertos/FreeRTOS.h>
 
 void thread_esp_init(struct rt_thread *tid);
 void thread_esp_cleanup(struct rt_thread *tid);

@@ -17,17 +17,22 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/signal.h>
 #include <sys/unistd.h>
 #include <sys/reent.h>
-#include "rom/libc_stubs.h"
+#include "esp32/rom/libc_stubs.h"
 #include "esp_vfs.h"
 #include "esp_newlib.h"
 #include "sdkconfig.h"
 
 static struct _reent s_reent;
+
+#ifndef _CONST
+#define _CONST const
+#endif
 
 extern int _printf_float(struct _reent *rptr,
                void *pdata,

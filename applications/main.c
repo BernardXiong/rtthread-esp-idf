@@ -8,6 +8,15 @@
 */
 #include <stdio.h>
 
+#if 1
+void app_main()
+{
+    nvs_flash_init();
+
+    printf("hello!\n");
+    return 0;
+}
+#else
 #include "esp_system.h"
 #include "nvs_flash.h"
 
@@ -23,15 +32,11 @@
 #include <dfs_romfs.h>
 #include <dfs_init.h>
 #include <devfs.h>
-#ifndef IDF_LWIP
-#include <ethernetif.h>
-#endif
 
 #include "esp_system.h"
 #include "esp_wifi.h"
 #include "esp_event_loop.h"
 #include "esp_log.h"
-#include "wifi_airkiss.h"
 
 #include "drv_sdram.h"
 #include "drv_i2c.h"
@@ -49,80 +54,6 @@
 extern const struct romfs_dirent romfs_root;
 extern void lwip_system_init(void);
 extern rt_err_t codec_hw_init(const char *name);
-
-// #define WIFI_USING_AIRKISS
-#define WIFI_SSID   "realthread_309"
-#define WIFI_PASSWD "02158995663"
-
-static esp_err_t event_handler(void *ctx, system_event_t *event)
-{
-    switch(event->event_id) {
-    case SYSTEM_EVENT_STA_START:
-        esp_wifi_connect();
-        rt_kprintf("STA_START\n");
-        break;
-    case SYSTEM_EVENT_STA_GOT_IP:
-        rt_kprintf("STA_GOT_IP\n");
-        break;
-    case SYSTEM_EVENT_STA_DISCONNECTED:
-        /* This is a workaround as ESP32 WiFi libs don't currently
-           auto-reassociate. */
-        esp_wifi_connect();
-        rt_kprintf("STA_DISCONNECTED\n");
-        break;
-    default:
-        break;
-    }
-    return ESP_OK;
-}
-
-#ifdef WIFI_USING_AIRKISS
-void rt_hw_wifi_init()
-{
-    tcpip_adapter_init();
-    ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
-    ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_FLASH) );
-    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
-    ESP_ERROR_CHECK( esp_wifi_start() );
-
-    wifi_config_t wifi_config;
-    memset(&wifi_config, 0x0, sizeof(wifi_config));
-
-    esp_wifi_get_config(WIFI_IF_STA, &wifi_config);
-    if (wifi_config.sta.ssid[0] == 0)
-    {
-        printf("startup airkiss...\n");
-        wifi_airkiss();
-    }
-    else
-    {
-        esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
-        esp_wifi_connect();
-    }
-}
-#else
-void rt_hw_wifi_init()
-{
-    tcpip_adapter_init();
-    ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
-    ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_RAM) );
-    ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
-    wifi_config_t sta_config = {
-        .sta = {
-            .ssid      = WIFI_SSID,
-            .password  = WIFI_PASSWD,
-            .bssid_set = false
-        }
-    };
-    ESP_ERROR_CHECK( esp_wifi_set_config(WIFI_IF_STA, &sta_config) );
-    ESP_ERROR_CHECK( esp_wifi_start() );
-    ESP_ERROR_CHECK( esp_wifi_connect() );
-}
-#endif
 
 /* pre-initialization for stdio console */
 int rtthread_stdio_init(void)
@@ -149,10 +80,6 @@ int rtthread_components_init(void)
 
     esp32_hw_pin_init();
     elm_init();
-#ifndef IDF_LWIP
-    lwip_system_init();
-    eth_system_device_init();
-#endif
 
     finsh_system_init();
 #ifdef RT_USING_PTHREADS
@@ -204,46 +131,12 @@ int rtthread_components_init(void)
     return 0;
 }
 
-#ifndef IDF_LWIP
-#include "lwipopts.h"
-#include "lwip/inet.h"
-#include "lwip/ip_addr.h"
-
-static void netif_status_callback(struct netif *netif)
-{
-    system_event_t evt;
-
-    printf("netif status changed %s\n", ip4addr_ntoa(netif_ip4_addr(netif)));
-
-    if (!ip4_addr_cmp(ip_2_ip4(&netif->ip_addr), ip_2_ip4(IP4_ADDR_ANY)))
-    {
-        tcpip_adapter_ip_info_t _ip_info, *ip_info;
-        ip_info = &_ip_info;
-
-        evt.event_id = SYSTEM_EVENT_STA_GOT_IP;
-        ip4_addr_set(&ip_info->ip, ip_2_ip4(&netif->ip_addr));
-        ip4_addr_set(&ip_info->netmask, ip_2_ip4(&netif->netmask));
-        ip4_addr_set(&ip_info->gw, ip_2_ip4(&netif->gw));
-
-        memcpy(&evt.event_info.got_ip.ip_info, ip_info, sizeof(tcpip_adapter_ip_info_t));
-
-        esp_event_send(&evt);
-    }
-}
-#endif
-
 void app_main()
 {
     nvs_flash_init();
 
     rtthread_components_init();
-    rt_hw_wifi_init();
-
-#ifndef IDF_LWIP
-    if (netif_default)
-        netif_set_status_callback(netif_default, netif_status_callback);
-#endif
 
     return ;
 }
-
+#endif
