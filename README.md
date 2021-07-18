@@ -6,16 +6,7 @@ RT-Thread针对ESP32的移植（使用Espressif Systems的IDF框架）
 获得RT-Thread的ESP32版本，需要安装git，并以以下方式获得代码：
 
 ```bash
-git clone https://github.com/BernardXiong/rtthread-esp-idf
-
-cd rtthread-esp-idf
-git submodule init
-git submodule update
-
-cd esp-idf-port/esp-idf
-git submodule init
-git submodule update
-
+git clone --recursive https://github.com/BernardXiong/rtthread-esp-idf
 git apply ../esp-idf-port.patch
 ```
 
